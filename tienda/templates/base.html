@@ -1,0 +1,117 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Bibliotecas Para Todos - Sistema de Gestión de Biblioteca{% endblock %}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'inicio' %}"
+          ><i class="bi bi-book-half me-2"></i>Bibliotecas Para Todos</a
+        >
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navMain"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navMain">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/nosotros/">Nosotros</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/terminos/">Terminos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/privacidad/">Privacidad</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/biblioteca/"
+                ><i class="bi bi-shop me-1"></i>Biblioteca</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/admin/"
+                ><i class="bi bi-speedometer2 me-1"></i>Admin</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/login/"
+                ><i class="bi bi-box-arrow-in-right me-1"></i>Iniciar Sesion</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="btn btn-primary btn-sm ms-2 px-3" href="/registro/"
+                >Registrarse</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <h5 class="text-white mb-3">
+              <i class="bi bi-book-half me-2"></i>Bibliotecas Para Todos
+            </h5>
+            <p>
+              Sistema de gestion de biblioteca para administrar usuarios, libros
+              y prestamos de forma eficiente.
+            </p>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h6 class="text-white mb-3">Enlaces</h6>
+            <ul class="list-unstyled">
+              <li class="mb-1"><a href="/nosotros/">Nosotros</a></li>
+              <li class="mb-1">
+                <a href="/terminos/">Terminos y Condiciones</a>
+              </li>
+              <li class="mb-1">
+                <a href="/privacidad/">Politica de Privacidad</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-4 mb-3">
+            <h6 class="text-white mb-3">Contacto</h6>
+            <p class="mb-1">
+              <i class="bi bi-envelope me-2"></i>info@bibliotecasparatodos.com
+            </p>
+            <p><i class="bi bi-telephone me-2"></i>555-0100</p>
+          </div>
+        </div>
+        <hr class="border-secondary" />
+        <p class="text-center mb-0">
+          &copy; 2026 Bibliotecas Para Todos. Todos los derechos reservados.
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

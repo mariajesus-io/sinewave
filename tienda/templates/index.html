@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Bibliotecas Para Todos{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+  <div class="container text-center">
+    <h1 class="mb-3">Tu biblioteca digital, organizada</h1>
+    <p class="mb-4">
+      Dos experiencias: administración para bibliotecarios y catálogo para
+      lectores.
+    </p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="/biblioteca/" class="btn btn-light btn-lg px-4"
+        ><i class="bi bi-shop me-1"></i>Ir a Biblioteca</a
+      >
+      <a href="/admin/" class="btn btn-outline-light btn-lg px-4"
+        >Panel Admin</a
+      >
+    </div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <div class="row g-4 text-center mb-5">
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number">1,250+</div>
+        <div class="stat-label">Libros Registrados</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number">340+</div>
+        <div class="stat-label">Usuarios Activos</div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="stat-card">
+        <div class="stat-number">890+</div>
+        <div class="stat-label">Prestamos Realizados</div>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="text-center mb-4">Nuestros Servicios</h2>
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <i class="bi bi-people-fill"></i>
+        <h5>Gestion de Usuarios</h5>
+        <p class="text-muted">
+          Administra registros de usuarios, datos de contacto y historial de
+          prestamos.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <i class="bi bi-book-fill"></i>
+        <h5>Catalogo de Libros</h5>
+        <p class="text-muted">
+          Cataloga todos los libros con informacion detallada y
+          disponibilidad en tiempo real.
+        </p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card feature-card h-100">
+        <i class="bi bi-arrow-left-right"></i>
+        <h5>Prestamos</h5>
+        <p class="text-muted">
+          Controla prestamos y devoluciones con fechas y estados
+          actualizados.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="text-center mb-4">Libros Destacados</h2>
+  <div class="row g-4" id="featuredBooks"></div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  fetch("data.json")
+    .then((r) => r.json())
+    .then((data) => {
+      const container = document.getElementById("featuredBooks");
+      if (!container || !data.libros) return;
+      const available = data.libros
+        .filter((l) => l.disponibles > 0)
+        .slice(0, 4);
+      container.innerHTML = available
+        .map(
+          (libro) => `
+      <div class="col-md-3">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <i class="bi bi-book text-primary" style="font-size:2.5rem"></i>
+            <h5 class="card-title mt-2">${libro.titulo}</h5>
+            <p class="text-muted small mb-1">${libro.autor}</p>
+            <p class="text-muted small">${libro.genero} - ${libro.anio}</p>
+            <span class="badge bg-success">${libro.disponibles} disponibles</span>
+          </div>
+        </div>
+      </div>
+    `,
+        )
+        .join("");
+    });
+</script>
+{% endblock %}
