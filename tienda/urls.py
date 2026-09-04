@@ -13,5 +13,6 @@ urlpatterns = [
     path('checkout/', views.checkout, name='checkout'),
     path('pago-exitoso/', views.pago_exitoso, name='pago_exitoso'),
     path('historial/', views.historial, name='historial'),
+    path('categoria/<str:slug>/', views.categoria, name='categoria'),
 ]
 

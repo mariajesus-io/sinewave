@@ -3,100 +3,247 @@
 {% block title %}Inicio - Sinewave{% endblock %}
 
 {% block content %}
+
 <!-- BANNER -->
-<section style="position: relative; background: url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; padding: 100px 0; overflow: hidden;">
-  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0, 26, 51, 0.85) 0%, rgba(0,0,0,0.7) 100%);"></div>
+<section style="position: relative; background: url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; padding: 110px 0; overflow: hidden;">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(0,0,0,0.75) 100%);"></div>
   <div class="container text-center text-light position-relative" style="z-index: 2;">
-    <h1 class="display-4 fw-bold mb-3" style="color: var(--accent); text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Desata tu Potencial Musical</h1>
-    <p class="lead mb-4 text-light" style="font-weight: 300;">
+    <h1 class="display-4 fw-bold mb-3" style="color: var(--accent); text-shadow: 2px 2px 4px rgba(0,0,0,0.5); font-family: 'Righteous', cursive; letter-spacing: 2px;">Desata tu Potencial Musical</h1>
+    <p class="lead mb-4 text-light" style="font-weight: 300; max-width: 560px; margin: 0 auto 24px;">
       Encuentra los mejores instrumentos musicales y equipos de audio profesional.
     </p>
-    <a href="#categorias" class="btn btn-outline-light btn-lg px-5 shadow-sm" style="border-radius: 50px;">
+    <a href="#categorias-grid" class="btn btn-outline-light btn-lg px-5 shadow-sm" style="border-radius: 50px;">
       <i class="bi bi-chevron-down me-2"></i>Descubrir
     </a>
   </div>
 </section>
 
 <!-- BENEFICIOS / PROMOCIONES -->
-<section class="container py-5 mt-3">
+<section class="container py-5">
   <div class="row g-4 text-center">
-    <!-- Beneficio 1 -->
     <div class="col-md-4">
-      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 14px; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
-          <i class="bi bi-credit-card mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <i class="bi bi-credit-card mb-3 d-block" style="font-size: 2.8rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Paga hasta en 12 pagos</h5>
-          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Sin interés con tarjetas de crédito seleccionadas.</p>
+          <p class="small mb-0" style="color: #cbd5e1;">Sin interés con tarjetas de crédito seleccionadas.</p>
         </div>
       </div>
     </div>
-    <!-- Beneficio 2 -->
     <div class="col-md-4">
-      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 14px; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
-          <i class="bi bi-truck mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <i class="bi bi-truck mb-3 d-block" style="font-size: 2.8rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Envíos Gratis a Todo Chile</h5>
-          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Por compras superiores a $100.000.</p>
+          <p class="small mb-0" style="color: #cbd5e1;">Por compras superiores a $100.000.</p>
         </div>
       </div>
     </div>
-    <!-- Beneficio 3 -->
     <div class="col-md-4">
-      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 14px; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
-          <i class="bi bi-box-seam mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <i class="bi bi-box-seam mb-3 d-block" style="font-size: 2.8rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Cajas Sorpresa</h5>
-          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Accesorios aleatorios increíbles en cada caja misteriosa.</p>
+          <p class="small mb-0" style="color: #cbd5e1;">Accesorios aleatorios increíbles en cada caja misteriosa.</p>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="categorias" class="container py-4">
-  <h2 class="text-center mb-5 text-light fw-bold" style="letter-spacing: 1px; text-transform: uppercase;">Nuestras Categorías</h2>
-  
-  <div class="row mb-4 justify-content-center">
-    <div class="col-md-6">
-      <form class="d-flex" action="#categorias" method="get">
-        <input class="form-control me-2 text-light" style="background: var(--bg); border: 1px solid var(--border);" type="search" placeholder="Buscar instrumentos, marcas..." aria-label="Search">
-        <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
-      </form>
+<!-- ════════════════════════════════════════════════
+     SECCIÓN: NUESTRAS CATEGORÍAS
+════════════════════════════════════════════════ -->
+<section id="categorias-grid" style="background: linear-gradient(180deg, var(--bg) 0%, var(--primary) 100%); padding: 60px 0 80px;">
+  <div class="container">
+    <h2 class="text-center fw-bold mb-2" style="font-family: 'Righteous', cursive; font-size: 2.2rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase;">Nuestras Categorías</h2>
+    <p class="text-center mb-5" style="color: var(--text-muted);">Encuentra exactamente lo que buscas</p>
+
+    <div class="row g-4 justify-content-center">
+
+      <!-- Guitarras -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'guitarras' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎸</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Guitarras</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Bajos -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'bajos' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎵</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Bajos</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Ukeleles -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'ukeleles' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🪗</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Ukeleles</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Pianos -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'pianos' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎹</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Pianos</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Teclados -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'teclados' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎼</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Teclados</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Batería y Percusión -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'bateria' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🥁</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Batería y Percusión</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Amplificadores -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'amplificadores' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🔊</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Amplificadores</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Audio Profesional -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'audio-profesional' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎙️</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Audio Profesional</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Audio Hogar y Estudio -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'audio-hogar' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎧</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Audio Hogar y Estudio</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- DJ -->
+      <div class="col-6 col-md-4 col-lg-2">
+        <a href="{% url 'categoria' 'dj' %}" class="text-decoration-none">
+          <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
+            <div class="card-body py-4 px-2">
+              <div class="mb-3" style="font-size: 2.6rem; line-height: 1;">🎛️</div>
+              <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">DJ</h6>
+            </div>
+          </div>
+        </a>
+      </div>
+
     </div>
   </div>
-  <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap">
-    <button class="btn btn-primary btn-sm px-4 rounded-pill">Todas las Categorías</button>
-    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Guitarras y Bajos</button>
-    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Teclados</button>
-    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Audio Profesional</button>
-  </div>
+</section>
 
-  {% for categoria, productos in categorias_productos.items %}
-  <h3 class="mt-5 mb-4 text-light" style="border-bottom: 2px solid var(--primary-light); padding-bottom: 10px; color: var(--accent) !important;">{{ categoria }}</h3>
-  <div class="row g-4">
-    {% for producto in productos %}
-    <div class="col-md-3">
-      <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
-        <!-- Imagen del producto -->
-        <div style="height: 200px; overflow: hidden; background: #000;">
-          <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover; opacity: 0.9;" alt="{{ producto.nombre }}">
+<!-- ════════════════════════════════════════════════
+     SECCIÓN: LO MÁS VISTO
+════════════════════════════════════════════════ -->
+<section class="container py-5" id="mas-visto">
+  <div class="d-flex align-items-baseline gap-3 mb-4">
+    <h3 class="fw-bold mb-0" style="font-family: 'Righteous', cursive; color: var(--accent); font-size: 1.8rem; letter-spacing: 1px;">Lo más visto</h3>
+    <span style="color: var(--text-muted); font-size: 0.9rem;">Tendencias en Sinewave</span>
+  </div>
+  <div class="row g-3">
+    {% for item in mas_vistos %}
+    <div class="col-6 col-md-4 col-lg-2">
+      <a href="{% url 'categoria' item.categoria %}" class="text-decoration-none">
+        <div class="mas-visto-card" style="position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; border: 1px solid var(--border); transition: all 0.3s;">
+          <img src="{{ item.imagen }}" alt="{{ item.nombre }}" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: opacity 0.3s;">
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 10px 12px; background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, transparent 100%);">
+            <p class="text-white fw-semibold mb-0" style="font-size: 0.78rem; line-height: 1.2;">{{ item.nombre }}</p>
+          </div>
         </div>
-        <div class="card-body text-center d-flex flex-column">
-          <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.1rem;">{{ producto.nombre }}</h5>
-          <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
-          
-          {% if producto.stock > 0 %}
-            <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
-            <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</a>
-          {% else %}
-            <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
-            <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>
-          {% endif %}
-        </div>
-      </div>
+      </a>
     </div>
     {% endfor %}
   </div>
-  {% endfor %}
 </section>
+
+<!-- ════════════════════════════════════════════════
+     SECCIÓN: CARRUSEL DE MARCAS
+════════════════════════════════════════════════ -->
+<section style="background: var(--primary); padding: 50px 0;">
+  <div class="container">
+    <h4 class="text-center fw-bold mb-5" style="color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 3px;">Marcas Disponibles en Sinewave</h4>
+    <!-- Carrusel CSS infinito -->
+    <div style="overflow: hidden; position: relative;">
+      <div class="marcas-track d-flex align-items-center gap-5" style="animation: slide-marcas 22s linear infinite; width: max-content;">
+        <!-- Set 1 -->
+        {% for marca in marcas %}
+        <span class="fw-bold" style="font-size: 1.3rem; color: var(--text-muted); white-space: nowrap; font-family: 'Righteous', cursive; letter-spacing: 1px; opacity: 0.7;">{{ marca }}</span>
+        {% endfor %}
+        
+        <!-- Duplicado para bucle infinito -->
+        {% for marca in marcas %}
+        <span class="fw-bold" style="font-size: 1.3rem; color: var(--text-muted); white-space: nowrap; font-family: 'Righteous', cursive; letter-spacing: 1px; opacity: 0.7;">{{ marca }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+@keyframes slide-marcas {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.categoria-tile:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent) !important;
+  box-shadow: 0 8px 24px rgba(226, 232, 240, 0.12) !important;
+}
+.mas-visto-card:hover img { opacity: 0.9; }
+.mas-visto-card:hover { transform: scale(1.03); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+</style>
+
 {% endblock %}
