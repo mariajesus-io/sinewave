@@ -13,6 +13,9 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
       rel="stylesheet"
     />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Righteous&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
   </head>
@@ -20,10 +23,10 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary);">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}" style="text-decoration: none;">
-          <div class="me-2 d-flex align-items-center justify-content-center shadow-lg" style="width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary-light), var(--bg)); color: var(--accent); border-radius: 10px; font-weight: 900; font-size: 1.4rem; letter-spacing: -1.5px; border: 1px solid var(--accent); box-shadow: 0 0 12px rgba(226, 232, 240, 0.15) !important;">
-            <span style="background: linear-gradient(to bottom right, #ffffff, #94A3B8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SW</span>
+          <div class="me-2 d-flex align-items-center justify-content-center shadow-lg" style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary-light), var(--bg)); color: var(--accent); border-radius: 50%; font-family: 'Righteous', cursive; font-size: 1.5rem; letter-spacing: -1px; border: 2px solid var(--accent); box-shadow: 0 0 15px rgba(226, 232, 240, 0.2) !important;">
+            <span style="background: linear-gradient(to bottom right, #ffffff, #94A3B8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 2px;">SW</span>
           </div>
-          <span style="font-weight: 800; font-size: 1.4rem; letter-spacing: 1.5px; color: #F8FAFC; text-transform: uppercase;">Sinewave</span>
+          <span style="font-family: 'Righteous', cursive; font-size: 1.65rem; letter-spacing: 1px; color: #F8FAFC;">Sinewave</span>
         </a>
         <button
           class="navbar-toggler"
@@ -93,43 +96,48 @@
     <footer class="footer">
       <div class="container">
         <div class="row">
-          <div class="col-md-4 mb-3">
-            <h5 class="text-white mb-3">
+          <div class="col-md-3 mb-3">
+            <h5 class="text-white mb-3" style="font-family: 'Righteous', cursive;">
               <i class="bi bi-music-note-beamed me-2"></i>Sinewave
             </h5>
-            <p>
+            <p class="small text-muted">
               Tu tienda de instrumentos musicales, equipos de audio y sonido profesional.
               Compra rápido y seguro.
             </p>
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
             <h6 class="text-white mb-3">Enlaces</h6>
-            <ul class="list-unstyled">
-              <li class="mb-1"><a href="{% url 'nosotros' %}">Nosotros</a></li>
+            <ul class="list-unstyled small">
+              <li class="mb-1"><a href="{% url 'nosotros' %}" class="text-muted text-decoration-none">Nosotros</a></li>
               <li class="mb-1">
-                <a href="{% url 'terminos' %}">Terminos y Condiciones</a>
+                <a href="{% url 'terminos' %}" class="text-muted text-decoration-none">Términos y Condiciones</a>
               </li>
               <li class="mb-1">
-                <a href="{% url 'privacidad' %}">Politica de Privacidad</a>
+                <a href="{% url 'privacidad' %}" class="text-muted text-decoration-none">Política de Privacidad</a>
               </li>
             </ul>
           </div>
-          <div class="col-md-4 mb-3">
+          <div class="col-md-3 mb-3">
+            <h6 class="text-white mb-3">Administración</h6>
+            <ul class="list-unstyled small">
+              <li class="mb-1"><a href="/admin/" class="text-muted text-decoration-none"><i class="bi bi-gear-fill me-2"></i>Panel de Control</a></li>
+              <li class="mb-1"><a href="/admin/" class="text-muted text-decoration-none"><i class="bi bi-box-seam me-2"></i>Inventario y Productos</a></li>
+              <li class="mb-1"><a href="/admin/" class="text-muted text-decoration-none"><i class="bi bi-people-fill me-2"></i>Gestión de Usuarios</a></li>
+            </ul>
+          </div>
+          <div class="col-md-3 mb-3">
             <h6 class="text-white mb-3">Contacto</h6>
-            <p class="mb-1">
+            <p class="mb-1 small text-muted">
               <i class="bi bi-envelope me-2"></i>info@sinewave.cl
             </p>
-            <p><i class="bi bi-telephone me-2"></i>+56 9 1234 5678</p>
+            <p class="small text-muted"><i class="bi bi-telephone me-2"></i>+56 9 1234 5678</p>
           </div>
         </div>
         <hr class="border-secondary" />
-        <div class="d-flex justify-content-between align-items-center">
-          <p class="mb-0 flex-grow-1 text-center">
+        <div class="text-center">
+          <p class="mb-0 text-muted small">
             &copy; 2026 Sinewave Music Pro. Todos los derechos reservados.
           </p>
-          <a href="/admin/" class="text-muted text-decoration-none" style="opacity: 0.2; font-size: 0.8rem;" title="Administración">
-            <i class="bi bi-shield-lock-fill"></i>
-          </a>
         </div>
       </div>
     </footer>
