@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Iniciar Sesion - Sinewave Music Pro{% endblock %}
+{% block title %}Iniciar Sesión - Sinewave Music Pro{% endblock %}
 
 {% block content %}
 <div class="auth-wrapper" style="background: linear-gradient(135deg, var(--bg) 0%, var(--primary) 100%);">
@@ -8,11 +8,7 @@
     <div class="card-body p-4 p-md-5">
       <div class="text-center mb-4">
         <a href="{% url 'inicio' %}" class="text-decoration-none">
-          <i
-            class="bi bi-music-note-beamed text-primary"
-            style="font-size: 2.5rem; color: var(--accent) !important;"
-          ></i>
-          <h3 class="mt-2 text-light">Sinewave Music Pro</h3>
+          <img src="{% static 'img/logo_white_cropped.png' %}" alt="SineWave Logo" style="height: 125px; width: auto; margin-bottom: 20px;">
         </a>
         <p class="text-muted">Inicia sesión en tu cuenta</p>
       </div>

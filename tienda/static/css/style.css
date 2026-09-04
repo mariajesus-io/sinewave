@@ -39,7 +39,7 @@ body {
 
 .navbar .nav-link {
   font-weight: 500;
-  padding: 0.5rem 1rem !important;
+  padding: 0.5rem 0.5rem !important;
   border-radius: var(--radius);
   transition: all 0.2s;
 }

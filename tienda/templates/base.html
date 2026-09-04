@@ -23,8 +23,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary);">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}" style="text-decoration: none;">
-          <img src="{% static 'img/logo.jpg' %}" alt="Sinewave Logo" class="me-2 shadow-lg" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #00a2ff; box-shadow: 0 0 12px rgba(0, 162, 255, 0.5) !important;">
-          <span style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: 2px; color: #F8FAFC; text-shadow: 0 0 8px rgba(0, 162, 255, 0.4);">Sinewave</span>
+          <img src="{% static 'img/logo_white_cropped.png' %}" alt="SineWave Logo" style="height: 75px; width: auto; object-fit: contain; margin-top: -5px; margin-bottom: -5px;">
         </a>
         <button
           class="navbar-toggler"
@@ -35,7 +34,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
-          <ul class="navbar-nav me-auto gap-1">
+          <ul class="navbar-nav me-auto">
             <li class="nav-item">
               <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
             </li>
@@ -110,8 +109,8 @@
       <div class="container">
         <div class="row">
           <div class="col-md-3 mb-3">
-            <h5 class="text-white mb-3" style="font-family: 'Righteous', cursive;">
-              <i class="bi bi-music-note-beamed me-2"></i>Sinewave
+            <h5 class="text-white mb-3" style="font-family: 'Orbitron', sans-serif;">
+              <img src="{% static 'img/logo_white_cropped.png' %}" alt="Logo" style="height: 60px; width: auto;">
             </h5>
             <p class="small text-muted">
               Tu tienda de instrumentos musicales, equipos de audio y sonido profesional.
