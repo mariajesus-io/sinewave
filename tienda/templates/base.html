@@ -19,9 +19,11 @@
   <body class="bg-dark text-light">
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary);">
       <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}">
-          <div class="me-2 d-flex align-items-center justify-content-center shadow" style="width: 38px; height: 38px; background: linear-gradient(135deg, #E0E0E0, #9E9E9E); color: #001A33; border-radius: 8px; font-weight: 900; font-size: 1.2rem; letter-spacing: -1px; border: 2px solid #C0C0C0;">SW</div>
-          <span style="font-weight: 700; letter-spacing: 0.5px;">Sinewave</span>
+        <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}" style="text-decoration: none;">
+          <div class="me-2 d-flex align-items-center justify-content-center shadow-lg" style="width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary-light), var(--bg)); color: var(--accent); border-radius: 10px; font-weight: 900; font-size: 1.4rem; letter-spacing: -1.5px; border: 1px solid var(--accent); box-shadow: 0 0 12px rgba(226, 232, 240, 0.15) !important;">
+            <span style="background: linear-gradient(to bottom right, #ffffff, #94A3B8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SW</span>
+          </div>
+          <span style="font-weight: 800; font-size: 1.4rem; letter-spacing: 1.5px; color: #F8FAFC; text-transform: uppercase;">Sinewave</span>
         </a>
         <button
           class="navbar-toggler"
@@ -32,18 +34,35 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navMain">
-          <ul class="navbar-nav me-auto">
+          <ul class="navbar-nav me-auto gap-1">
             <li class="nav-item">
               <a class="nav-link" href="{% url 'inicio' %}">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'nosotros' %}">Nosotros</a>
+              <a class="nav-link text-warning fw-bold" href="#"><i class="bi bi-tag-fill me-1"></i>Mega Descuentos</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'terminos' %}">Terminos</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarMarcas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Marcas
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarMarcas" style="background-color: var(--primary);">
+                <li><a class="dropdown-item" href="#">Fender</a></li>
+                <li><a class="dropdown-item" href="#">Yamaha</a></li>
+                <li><a class="dropdown-item" href="#">Shure</a></li>
+                <li><a class="dropdown-item" href="#">Korg</a></li>
+                <li><a class="dropdown-item" href="#">Roland</a></li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'privacidad' %}">Privacidad</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarTiendas" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Tiendas
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarTiendas" style="background-color: var(--primary);">
+                <li><a class="dropdown-item" href="#">Costanera Center</a></li>
+                <li><a class="dropdown-item" href="#">Mallplaza Vespucio</a></li>
+                <li><a class="dropdown-item" href="#">Alto Las Condes</a></li>
+                <li><a class="dropdown-item" href="#">Mallplaza Trébol (Concepción)</a></li>
+              </ul>
             </li>
           </ul>
           <ul class="navbar-nav align-items-center gap-2">

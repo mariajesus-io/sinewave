@@ -22,31 +22,31 @@
   <div class="row g-4 text-center">
     <!-- Beneficio 1 -->
     <div class="col-md-4">
-      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
           <i class="bi bi-credit-card mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Paga hasta en 12 pagos</h5>
-          <p class="text-muted small mb-0">Sin interés con tarjetas de crédito seleccionadas.</p>
+          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Sin interés con tarjetas de crédito seleccionadas.</p>
         </div>
       </div>
     </div>
     <!-- Beneficio 2 -->
     <div class="col-md-4">
-      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
           <i class="bi bi-truck mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Envíos Gratis a Todo Chile</h5>
-          <p class="text-muted small mb-0">Por compras superiores a $100.000.</p>
+          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Por compras superiores a $100.000.</p>
         </div>
       </div>
     </div>
     <!-- Beneficio 3 -->
     <div class="col-md-4">
-      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+      <div class="card text-light border-0 h-100 shadow" style="border-radius: 12px; transition: transform 0.3s; background: linear-gradient(145deg, var(--primary-light), var(--primary)); border: 1px solid var(--border) !important;">
         <div class="card-body p-4">
           <i class="bi bi-box-seam mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
           <h5 class="fw-bold">Cajas Sorpresa</h5>
-          <p class="text-muted small mb-0">Accesorios aleatorios increíbles en cada caja misteriosa.</p>
+          <p class="text-muted small mb-0" style="color: #cbd5e1 !important;">Accesorios aleatorios increíbles en cada caja misteriosa.</p>
         </div>
       </div>
     </div>
@@ -59,7 +59,7 @@
   <div class="row mb-4 justify-content-center">
     <div class="col-md-6">
       <form class="d-flex" action="#categorias" method="get">
-        <input class="form-control me-2 bg-dark text-light border-secondary" type="search" placeholder="Buscar instrumentos, marcas..." aria-label="Search">
+        <input class="form-control me-2 text-light" style="background: var(--bg); border: 1px solid var(--border);" type="search" placeholder="Buscar instrumentos, marcas..." aria-label="Search">
         <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
       </form>
     </div>
@@ -71,36 +71,32 @@
     <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Audio Profesional</button>
   </div>
 
+  {% for categoria, productos in categorias_productos.items %}
+  <h3 class="mt-5 mb-4 text-light" style="border-bottom: 2px solid var(--primary-light); padding-bottom: 10px; color: var(--accent) !important;">{{ categoria }}</h3>
   <div class="row g-4">
     {% for producto in productos %}
     <div class="col-md-3">
-      <div class="card h-100" style="border: 1px solid var(--border);">
-        <div class="card-body text-center">
-          <!-- Icon depending on category, or generic if none -->
-          {% if "Guitarra" in producto.nombre %}
-            <i class="bi bi-guitar text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
-          {% elif "Teclado" in producto.nombre or "Piano" in producto.nombre %}
-            <i class="bi bi-music-player text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
-          {% elif "Micrófono" in producto.nombre %}
-            <i class="bi bi-mic text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
-          {% else %}
-            <i class="bi bi-speaker text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
-          {% endif %}
-          
-          <h5 class="card-title mt-2 text-light">{{ producto.nombre }}</h5>
-          <p class="fw-bold fs-5" style="color: var(--accent);">${{ producto.precio }}</p>
+      <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
+        <!-- Imagen del producto -->
+        <div style="height: 200px; overflow: hidden; background: #000;">
+          <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover; opacity: 0.9;" alt="{{ producto.nombre }}">
+        </div>
+        <div class="card-body text-center d-flex flex-column">
+          <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.1rem;">{{ producto.nombre }}</h5>
+          <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
           
           {% if producto.stock > 0 %}
-            <span class="badge bg-success mb-3">{{ producto.stock }} en stock</span>
-            <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100">Agregar al Carrito</a>
+            <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
+            <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</a>
           {% else %}
-            <span class="badge bg-danger mb-3">Agotado</span>
-            <button class="btn btn-outline-secondary w-100" disabled>Sin Stock</button>
+            <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
+            <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>
           {% endif %}
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
+  {% endfor %}
 </section>
 {% endblock %}
