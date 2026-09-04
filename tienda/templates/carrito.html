@@ -8,7 +8,6 @@
   
   <div class="row">
     <div class="col-md-8">
-      <!-- Mock Cart Items -->
       <div class="card bg-dark text-light border-secondary mb-3">
         <div class="card-body">
           <div class="row align-items-center">
@@ -21,13 +20,13 @@
             </div>
             <div class="col-md-3">
               <div class="input-group input-group-sm">
-                <button class="btn btn-outline-secondary text-light" type="button">-</button>
-                <input type="text" class="form-control text-center bg-dark text-light border-secondary" value="1" readonly>
-                <button class="btn btn-outline-secondary text-light" type="button">+</button>
+                <button class="btn btn-outline-secondary btn-minus" type="button">-</button>
+                <input type="text" class="form-control text-center" id="item-qty" value="1" readonly>
+                <button class="btn btn-outline-secondary btn-plus" type="button">+</button>
               </div>
             </div>
             <div class="col-md-3 text-end">
-              <span class="fw-bold" style="color: var(--accent);">$850.000</span>
+              <span class="fw-bold" style="color: var(--accent);" id="item-price" data-price="850000">$850.000</span>
             </div>
           </div>
         </div>
@@ -35,7 +34,6 @@
     </div>
     
     <div class="col-md-4">
-      <!-- Resumen / Modificar cantidades y revisar total -->
       <div class="card bg-dark text-light border-secondary">
         <div class="card-header border-secondary">
           <h5 class="mb-0">Resumen del Pedido</h5>
@@ -43,7 +41,7 @@
         <div class="card-body">
           <div class="d-flex justify-content-between mb-2">
             <span>Subtotal</span>
-            <span>$850.000</span>
+            <span id="subtotal">$850.000</span>
           </div>
           <div class="d-flex justify-content-between mb-3">
             <span>Descuento</span>
@@ -52,10 +50,9 @@
           <hr class="border-secondary">
           <div class="d-flex justify-content-between mb-4">
             <strong class="fs-5">Total</strong>
-            <strong class="fs-5" style="color: var(--accent);">$850.000</strong>
+            <strong class="fs-5" style="color: var(--accent);" id="total">$850.000</strong>
           </div>
           
-          <!-- Flowchart decision: ¿Tiene cuenta creada? Si va a checkout, si no va a login -->
           <a href="{% url 'login' %}?next={% url 'checkout' %}" class="btn btn-primary w-100 mb-2">Proceder al Pago</a>
           <a href="{% url 'inicio' %}" class="btn btn-outline-secondary w-100 text-light">Seguir Comprando</a>
         </div>
@@ -63,5 +60,40 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const qtyInput = document.getElementById('item-qty');
+    const priceDisplay = document.getElementById('item-price');
+    const subtotalDisplay = document.getElementById('subtotal');
+    const totalDisplay = document.getElementById('total');
+    const basePrice = parseInt(priceDisplay.getAttribute('data-price'), 10);
+
+    function updatePrice() {
+      let qty = parseInt(qtyInput.value, 10);
+      let newPrice = basePrice * qty;
+      let formatted = '$' + newPrice.toLocaleString('es-CL');
+      priceDisplay.textContent = formatted;
+      subtotalDisplay.textContent = formatted;
+      totalDisplay.textContent = formatted;
+    }
+
+    document.querySelector('.btn-plus').addEventListener('click', function() {
+      let qty = parseInt(qtyInput.value, 10);
+      qtyInput.value = qty + 1;
+      updatePrice();
+    });
+
+    document.querySelector('.btn-minus').addEventListener('click', function() {
+      let qty = parseInt(qtyInput.value, 10);
+      if (qty > 1) {
+        qtyInput.value = qty - 1;
+        updatePrice();
+      }
+    });
+  });
+</script>
 {% endblock %}
 

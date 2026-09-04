@@ -17,33 +17,33 @@
         <p class="text-muted">Inicia sesión en tu cuenta</p>
       </div>
 
-      <form id="loginForm">
+      <form id="loginForm" class="needs-validation" novalidate>
         <div class="mb-3">
           <label class="form-label">Correo electrónico</label>
           <div class="input-group">
-            <span class="input-group-text bg-dark text-light border-secondary"
-              ><i class="bi bi-envelope"></i
-            ></span>
+            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
             <input
               type="email"
-              class="form-control bg-dark text-light border-secondary"
+              class="form-control"
               id="email"
               placeholder="tu@email.com"
               required
             />
+            <div class="invalid-feedback">Por favor ingresa un correo válido.</div>
           </div>
         </div>
         <div class="mb-3">
           <label class="form-label">Contraseña</label>
           <div class="input-group">
-            <span class="input-group-text bg-dark text-light border-secondary"><i class="bi bi-lock"></i></span>
+            <span class="input-group-text"><i class="bi bi-lock"></i></span>
             <input
               type="password"
-              class="form-control bg-dark text-light border-secondary"
+              class="form-control"
               id="contrasena"
               placeholder="Tu contraseña"
               required
             />
+            <div class="invalid-feedback">La contraseña es obligatoria.</div>
           </div>
         </div>
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -92,13 +92,19 @@
     .getElementById("loginForm")
     .addEventListener("submit", function (e) {
       e.preventDefault();
+      const form = e.target;
+      if (!form.checkValidity()) {
+        e.stopPropagation();
+        form.classList.add('was-validated');
+        return;
+      }
+      
       const email = document.getElementById("email").value;
       const pass = document.getElementById("contrasena").value;
 
       if (email === "admin@sinewave.cl" && pass === "admin123") {
         window.location.href = "/admin/";
       } else {
-        // Prototype logic: simulate successful user auth and go to checkout (as per flow)
         window.location.href = "{% url 'checkout' %}";
       }
     });
