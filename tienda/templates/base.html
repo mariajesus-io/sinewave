@@ -15,7 +15,7 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Righteous&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     {% block extra_css %}{% endblock %}
   </head>
@@ -23,10 +23,8 @@
     <nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color: var(--primary);">
       <div class="container">
         <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}" style="text-decoration: none;">
-          <div class="me-2 d-flex align-items-center justify-content-center shadow-lg" style="width: 48px; height: 48px; background: linear-gradient(135deg, var(--primary-light), var(--bg)); color: var(--accent); border-radius: 50%; font-family: 'Righteous', cursive; font-size: 1.5rem; letter-spacing: -1px; border: 2px solid var(--accent); box-shadow: 0 0 15px rgba(226, 232, 240, 0.2) !important;">
-            <span style="background: linear-gradient(to bottom right, #ffffff, #94A3B8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 2px;">SW</span>
-          </div>
-          <span style="font-family: 'Righteous', cursive; font-size: 1.65rem; letter-spacing: 1px; color: #F8FAFC;">Sinewave</span>
+          <img src="{% static 'img/logo.jpg' %}" alt="Sinewave Logo" class="me-2 shadow-lg" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #00a2ff; box-shadow: 0 0 12px rgba(0, 162, 255, 0.5) !important;">
+          <span style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.5rem; letter-spacing: 2px; color: #F8FAFC; text-shadow: 0 0 8px rgba(0, 162, 255, 0.4);">Sinewave</span>
         </a>
         <button
           class="navbar-toggler"
