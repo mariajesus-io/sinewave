@@ -3,37 +3,72 @@
 {% block title %}Inicio - Sinewave{% endblock %}
 
 {% block content %}
-<section class="hero-section" style="background: linear-gradient(135deg, var(--primary) 0%, #000 100%);">
-  <div class="container text-center text-light">
-    <h1 class="mb-3" style="color: var(--accent);">El Sonido de Music Pro</h1>
-    <p class="mb-4 text-light">
-      Encuentra los mejores instrumentos musicales y equipos de audio para tus conciertos y estudios.
+<!-- BANNER -->
+<section style="position: relative; background: url('https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat; padding: 100px 0; overflow: hidden;">
+  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(0, 26, 51, 0.85) 0%, rgba(0,0,0,0.7) 100%);"></div>
+  <div class="container text-center text-light position-relative" style="z-index: 2;">
+    <h1 class="display-4 fw-bold mb-3" style="color: var(--accent); text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Desata tu Potencial Musical</h1>
+    <p class="lead mb-4 text-light" style="font-weight: 300;">
+      Encuentra los mejores instrumentos musicales y equipos de audio profesional.
     </p>
-    <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <a href="#catalogo" class="btn btn-primary btn-lg px-4"
-        ><i class="bi bi-music-note-list me-1"></i>Ver Catálogo</a
-      >
+    <a href="#categorias" class="btn btn-outline-light btn-lg px-5 shadow-sm" style="border-radius: 50px;">
+      <i class="bi bi-chevron-down me-2"></i>Descubrir
+    </a>
+  </div>
+</section>
+
+<!-- BENEFICIOS / PROMOCIONES -->
+<section class="container py-5 mt-3">
+  <div class="row g-4 text-center">
+    <!-- Beneficio 1 -->
+    <div class="col-md-4">
+      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+        <div class="card-body p-4">
+          <i class="bi bi-credit-card mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h5 class="fw-bold">Paga hasta en 12 pagos</h5>
+          <p class="text-muted small mb-0">Sin interés con tarjetas de crédito seleccionadas.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Beneficio 2 -->
+    <div class="col-md-4">
+      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+        <div class="card-body p-4">
+          <i class="bi bi-truck mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h5 class="fw-bold">Envíos Gratis a Todo Chile</h5>
+          <p class="text-muted small mb-0">Por compras superiores a $100.000.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Beneficio 3 -->
+    <div class="col-md-4">
+      <div class="card bg-dark text-light border-secondary h-100 shadow-sm" style="border-radius: 12px; transition: transform 0.3s;">
+        <div class="card-body p-4">
+          <i class="bi bi-box-seam mb-3 d-block" style="font-size: 2.5rem; color: var(--accent);"></i>
+          <h5 class="fw-bold">Cajas Sorpresa</h5>
+          <p class="text-muted small mb-0">Accesorios aleatorios increíbles en cada caja misteriosa.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<section id="catalogo" class="container py-5">
-  <h2 class="text-center mb-4 text-light">Catálogo de Productos</h2>
+<section id="categorias" class="container py-4">
+  <h2 class="text-center mb-5 text-light fw-bold" style="letter-spacing: 1px; text-transform: uppercase;">Nuestras Categorías</h2>
   
-  <!-- Flujo: ¿Desea buscar un producto específico? -> Usar categorías, filtros y opciones de búsqueda -->
   <div class="row mb-4 justify-content-center">
     <div class="col-md-6">
-      <form class="d-flex" action="#catalogo" method="get">
+      <form class="d-flex" action="#categorias" method="get">
         <input class="form-control me-2 bg-dark text-light border-secondary" type="search" placeholder="Buscar instrumentos, marcas..." aria-label="Search">
         <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
       </form>
     </div>
   </div>
   <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap">
-    <button class="btn btn-primary btn-sm">Todas las Categorías</button>
-    <button class="btn btn-outline-secondary btn-sm text-light">Guitarras y Bajos</button>
-    <button class="btn btn-outline-secondary btn-sm text-light">Teclados</button>
-    <button class="btn btn-outline-secondary btn-sm text-light">Audio Profesional</button>
+    <button class="btn btn-primary btn-sm px-4 rounded-pill">Todas las Categorías</button>
+    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Guitarras y Bajos</button>
+    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Teclados</button>
+    <button class="btn btn-outline-secondary btn-sm text-light px-4 rounded-pill">Audio Profesional</button>
   </div>
 
   <div class="row g-4">
