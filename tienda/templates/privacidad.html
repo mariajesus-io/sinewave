@@ -58,16 +58,24 @@
         </div>
       </div>
     </nav>
+{% extends 'base.html' %}
 
     <div class="page-header">
       <div class="container">
         <h2><i class="bi bi-shield-lock me-2"></i>Politica de Privacidad</h2>
       </div>
     </div>
+{% block title %}Politica de Privacidad - Bibliotecas Para Todos{% endblock %}
 
     <div class="container py-4">
       <div class="card p-4">
         <p class="text-muted mb-4">Ultima actualizacion: 1 de agosto de 2026</p>
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h2><i class="bi bi-shield-lock me-2"></i>Politica de Privacidad</h2>
+  </div>
+</div>
 
         <h4>1. Informacion que Recopilamos</h4>
         <p>
@@ -88,6 +96,9 @@
             sistema operativo y direccion IP.
           </li>
         </ul>
+<div class="container py-4">
+  <div class="card p-4">
+    <p class="text-muted mb-4">Ultima actualizacion: 1 de agosto de 2026</p>
 
         <h4>2. Uso de la Informacion</h4>
         <p>Utilizamos la informacion recopilada para:</p>
@@ -99,6 +110,25 @@
           <li>Recopilar analisis para mejorar el servicio.</li>
           <li>Detectar, prevenir y resolver problemas tecnicos.</li>
         </ul>
+    <h4>1. Informacion que Recopilamos</h4>
+    <p>
+      Recopilamos los siguientes tipos de informacion cuando usted utiliza
+      nuestro servicio:
+    </p>
+    <ul>
+      <li>
+        <strong>Informacion personal:</strong> nombre, correo electronico,
+        telefono y direccion.
+      </li>
+      <li>
+        <strong>Informacion de uso:</strong> datos sobre como utiliza el
+        servicio, incluyendo historial de prestamos.
+      </li>
+      <li>
+        <strong>Informacion del dispositivo:</strong> tipo de navegador,
+        sistema operativo y direccion IP.
+      </li>
+    </ul>
 
         <h4>3. Proteccion de Datos</h4>
         <p>
@@ -112,6 +142,16 @@
           <li>Monitoreo regular de vulnerabilidades.</li>
           <li>Capacitacion continua en seguridad para nuestro personal.</li>
         </ul>
+    <h4>2. Uso de la Informacion</h4>
+    <p>Utilizamos la informacion recopilada para:</p>
+    <ul>
+      <li>Proporcionar y mantener nuestro servicio.</li>
+      <li>Notificarle sobre cambios en el servicio.</li>
+      <li>Permitir la participacion en funciones interactivas.</li>
+      <li>Proporcionar soporte al cliente.</li>
+      <li>Recopilar analisis para mejorar el servicio.</li>
+      <li>Detectar, prevenir y resolver problemas tecnicos.</li>
+    </ul>
 
         <h4>4. Compartir Informacion</h4>
         <p>
@@ -124,6 +164,18 @@
           <li>Para proteger los derechos de Bibliotecas Para Todos.</li>
           <li>En caso de fusion o adquisicion.</li>
         </ul>
+    <h4>3. Proteccion de Datos</h4>
+    <p>
+      Implementamos medidas de seguridad tecnicas y organizativas para
+      proteger su informacion personal contra acceso no autorizado,
+      alteracion, divulgacion o destruccion. Esto incluye:
+    </p>
+    <ul>
+      <li>Cifrado de datos en transito y en reposo.</li>
+      <li>Acceso restringido a informacion personal.</li>
+      <li>Monitoreo regular de vulnerabilidades.</li>
+      <li>Capacitacion continua en seguridad para nuestro personal.</li>
+    </ul>
 
         <h4>5. Cookies</h4>
         <p>
@@ -131,6 +183,17 @@
           navegador para rechazar cookies, aunque esto podria afectar la
           funcionalidad del servicio.
         </p>
+    <h4>4. Compartir Informacion</h4>
+    <p>
+      No vendemos ni compartimos su informacion personal con terceros,
+      excepto en los siguientes casos:
+    </p>
+    <ul>
+      <li>Con su consentimiento explicito.</li>
+      <li>Cuando sea necesario para cumplir con la ley.</li>
+      <li>Para proteger los derechos de Bibliotecas Para Todos.</li>
+      <li>En caso de fusion o adquisicion.</li>
+    </ul>
 
         <h4>6. Sus Derechos</h4>
         <p>Usted tiene derecho a:</p>
@@ -142,6 +205,12 @@
           <li>Solicitar la portabilidad de sus datos.</li>
           <li>Retirar su consentimiento en cualquier momento.</li>
         </ul>
+    <h4>5. Cookies</h4>
+    <p>
+      Utilizamos cookies para mejorar su experiencia. Puede configurar su
+      navegador para rechazar cookies, aunque esto podria afectar la
+      funcionalidad del servicio.
+    </p>
 
         <h4>7. Retencion de Datos</h4>
         <p>
@@ -149,6 +218,16 @@
           para los fines para los que fue recopilada, o segun lo requiera la ley
           aplicable.
         </p>
+    <h4>6. Sus Derechos</h4>
+    <p>Usted tiene derecho a:</p>
+    <ul>
+      <li>Acceder a su informacion personal.</li>
+      <li>Corregir datos inexactos.</li>
+      <li>Solicitar la eliminacion de sus datos.</li>
+      <li>Oponerse al procesamiento de sus datos.</li>
+      <li>Solicitar la portabilidad de sus datos.</li>
+      <li>Retirar su consentimiento en cualquier momento.</li>
+    </ul>
 
         <h4>8. Cambios en esta Politica</h4>
         <p>
@@ -156,6 +235,12 @@
           notificaremos de cualquier cambio publicando la nueva politica en esta
           pagina y actualizando la fecha de "ultima actualizacion".
         </p>
+    <h4>7. Retencion de Datos</h4>
+    <p>
+      Conservamos su informacion personal solo durante el tiempo necesario
+      para los fines para los que fue recopilada, o segun lo requiera la ley
+      aplicable.
+    </p>
 
         <h4>9. Contacto</h4>
         <p>
@@ -169,6 +254,12 @@
         </ul>
       </div>
     </div>
+    <h4>8. Cambios en esta Politica</h4>
+    <p>
+      Podemos actualizar esta politica de privacidad periodicamente. Le
+      notificaremos de cualquier cambio publicando la nueva politica en esta
+      pagina y actualizando la fecha de "ultima actualizacion".
+    </p>
 
     <footer class="footer">
       <div class="container">
@@ -212,3 +303,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
+    <h4>9. Contacto</h4>
+    <p>
+      Si tiene preguntas sobre esta politica de privacidad, puede
+      contactarnos a traves de:
+    </p>
+    <ul>
+      <li>Correo electronico: privacidad@bibliotecasparatodos.com</li>
+      <li>Telefono: 555-0100</li>
+      <li>Direccion: Calle Principal 123, Ciudad</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}
