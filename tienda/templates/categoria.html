@@ -13,32 +13,66 @@
     </h2>
   </div>
 
-  <div class="row g-4">
-    {% for producto in cat.productos %}
-    <div class="col-md-3">
-      <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
-        <div style="height: 200px; overflow: hidden; background: #000;">
-          <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover; opacity: 0.9;" alt="{{ producto.nombre }}">
+  <div class="row">
+    <!-- Filtros (Sidebar) -->
+    <div class="col-md-3 mb-4">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header border-secondary fw-bold">
+          <i class="bi bi-funnel me-2"></i>Filtros
         </div>
-        <div class="card-body text-center d-flex flex-column">
-          <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.05rem;">{{ producto.nombre }}</h5>
-          <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
-          {% if producto.stock > 0 %}
-            <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
-            <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</a>
-          {% else %}
-            <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
-            <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>
-          {% endif %}
+        <div class="card-body">
+          <h6 class="mb-3 text-muted">Rango de Precio</h6>
+          <input type="range" class="form-range" min="0" max="2000000" id="rangoPrecio">
+          <div class="d-flex justify-content-between text-muted small mb-4">
+            <span>$0</span>
+            <span>$2.000.000</span>
+          </div>
+
+          <h6 class="mb-3 text-muted">Disponibilidad</h6>
+          <div class="form-check mb-2">
+            <input class="form-check-input bg-dark border-secondary" type="checkbox" id="stockFiltro" checked>
+            <label class="form-check-label small" for="stockFiltro">En Stock</label>
+          </div>
+          <div class="form-check mb-4">
+            <input class="form-check-input bg-dark border-secondary" type="checkbox" id="agotadoFiltro">
+            <label class="form-check-label small" for="agotadoFiltro">Agotados</label>
+          </div>
+
+          <button class="btn btn-sm btn-outline-light w-100">Aplicar Filtros</button>
         </div>
       </div>
     </div>
-    {% empty %}
-    <div class="col-12 text-center text-muted py-5">
-      <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
-      <p class="mt-3">No hay productos en esta categoría por el momento.</p>
+
+    <!-- Catálogo de Productos -->
+    <div class="col-md-9">
+      <div class="row g-4">
+        {% for producto in cat.productos %}
+        <div class="col-md-4">
+          <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
+            <div style="height: 200px; overflow: hidden; background: #000;">
+              <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover; opacity: 0.9;" alt="{{ producto.nombre }}">
+            </div>
+            <div class="card-body text-center d-flex flex-column">
+              <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.05rem;">{{ producto.nombre }}</h5>
+              <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
+              {% if producto.stock > 0 %}
+                <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
+                <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</a>
+              {% else %}
+                <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
+                <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-5">
+          <i class="bi bi-box-seam" style="font-size: 3rem;"></i>
+          <p class="mt-3">No hay productos en esta categoría por el momento.</p>
+        </div>
+        {% endfor %}
+      </div>
     </div>
-    {% endfor %}
   </div>
 </div>
 {% endblock %}
