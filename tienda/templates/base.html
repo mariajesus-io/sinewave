@@ -66,16 +66,31 @@
               </ul>
             </li>
           </ul>
+          
+          <form class="d-flex mx-auto w-100 my-2 my-lg-0 px-lg-3" style="max-width: 400px;" role="search">
+            <div class="input-group">
+              <input type="search" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Buscar productos..." aria-label="Search">
+              <button class="btn btn-outline-secondary btn-sm" type="submit" style="color: var(--accent); border-color: var(--border);"><i class="bi bi-search"></i></button>
+            </div>
+          </form>
+
           <ul class="navbar-nav align-items-center gap-2">
             <li class="nav-item">
               <a class="nav-link" href="#"
                 ><i class="bi bi-heart me-1"></i>Favoritos</a
               >
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'login' %}"
-                ><i class="bi bi-person me-1"></i>Cuenta</a
-              >
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarCuenta" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bi bi-person me-1"></i>Cuenta
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="navbarCuenta" style="background-color: var(--primary);">
+                <li><a class="dropdown-item" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                <li><a class="dropdown-item" href="{% url 'registro' %}">Crear Cuenta</a></li>
+                <li><hr class="dropdown-divider border-secondary"></li>
+                <li><a class="dropdown-item" href="#">Mis Datos Personales</a></li>
+                <li><a class="dropdown-item" href="{% url 'historial' %}">Historial de Compras</a></li>
+              </ul>
             </li>
             <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
               <a class="btn btn-primary btn-sm px-3 rounded-pill shadow-sm" href="{% url 'carrito' %}"
