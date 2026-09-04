@@ -1,18 +1,18 @@
 :root {
-  --primary: #2c3e50;
-  --primary-light: #34495e;
-  --accent: #3498db;
-  --accent-hover: #2980b9;
-  --success: #27ae60;
+  --primary: #001A33; /* Navy Blue */
+  --primary-light: #002855;
+  --accent: #C0C0C0; /* Metallic Silver */
+  --accent-hover: #A9A9A9;
+  --success: #2ecc71;
   --danger: #e74c3c;
-  --warning: #f39c12;
-  --bg: #f8f9fa;
-  --card-bg: #ffffff;
-  --text: #2c3e50;
-  --text-muted: #6c757d;
-  --border: #dee2e6;
-  --shadow: 0 2px 8px rgba(0,0,0,0.08);
-  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+  --warning: #f1c40f;
+  --bg: #000000; /* Black */
+  --card-bg: #111111; /* Dark Black */
+  --text: #E0E0E0;
+  --text-muted: #888888;
+  --border: #333333;
+  --shadow: 0 2px 8px rgba(255,255,255,0.05);
+  --shadow-lg: 0 8px 24px rgba(255,255,255,0.1);
   --radius: 8px;
   --radius-lg: 12px;
 }
@@ -72,6 +72,7 @@ body {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   transition: transform 0.2s, box-shadow 0.2s;
+  background-color: var(--card-bg);
 }
 
 .card:hover {

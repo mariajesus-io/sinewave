@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Carrito - Sinewave{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-light">Carrito de Compras</h2>
+  
+  <div class="row">
+    <div class="col-md-8">
+      <!-- Mock Cart Items -->
+      <div class="card bg-dark text-light border-secondary mb-3">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+              <i class="bi bi-guitar text-primary" style="font-size: 2.5rem; color: var(--accent) !important;"></i>
+            </div>
+            <div class="col-md-4">
+              <h5 class="mb-0">Guitarra Eléctrica Fender Stratocaster</h5>
+              <small class="text-muted">Instrumentos</small>
+            </div>
+            <div class="col-md-3">
+              <div class="input-group input-group-sm">
+                <button class="btn btn-outline-secondary text-light" type="button">-</button>
+                <input type="text" class="form-control text-center bg-dark text-light border-secondary" value="1" readonly>
+                <button class="btn btn-outline-secondary text-light" type="button">+</button>
+              </div>
+            </div>
+            <div class="col-md-3 text-end">
+              <span class="fw-bold" style="color: var(--accent);">$850.000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <!-- Resumen / Modificar cantidades y revisar total -->
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header border-secondary">
+          <h5 class="mb-0">Resumen del Pedido</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span>$850.000</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Descuento</span>
+            <span>$0</span>
+          </div>
+          <hr class="border-secondary">
+          <div class="d-flex justify-content-between mb-4">
+            <strong class="fs-5">Total</strong>
+            <strong class="fs-5" style="color: var(--accent);">$850.000</strong>
+          </div>
+          
+          <!-- Flowchart decision: ¿Tiene cuenta creada? Si va a checkout, si no va a login -->
+          <a href="{% url 'login' %}?next={% url 'checkout' %}" class="btn btn-primary w-100 mb-2">Proceder al Pago</a>
+          <a href="{% url 'inicio' %}" class="btn btn-outline-secondary w-100 text-light">Seguir Comprando</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

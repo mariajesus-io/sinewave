@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Sinewave{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <h2 class="text-center mb-4 text-light">Checkout</h2>
+  
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card bg-dark text-light border-secondary mb-4">
+        <div class="card-header border-secondary">
+          <h5 class="mb-0">1. Opciones de Despacho y Entrega</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="despacho" id="despacho1" checked>
+            <label class="form-check-label" for="despacho1">
+              Despacho a Domicilio (Starken / Chilexpress)
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="despacho" id="despacho2">
+            <label class="form-check-label" for="despacho2">
+              Retiro en Tienda (Providencia)
+            </label>
+          </div>
+          <hr class="border-secondary">
+          <div class="mb-3">
+            <label class="form-label">Dirección de Envío</label>
+            <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Ej. Av. Providencia 1234">
+          </div>
+        </div>
+      </div>
+
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header border-secondary">
+          <h5 class="mb-0">2. Opciones de Pago</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="pago" id="pago1" checked>
+            <label class="form-check-label" for="pago1">
+              Tarjeta de Crédito / Débito (Webpay)
+            </label>
+          </div>
+          <div class="form-check mb-2">
+            <input class="form-check-input" type="radio" name="pago" id="pago2">
+            <label class="form-check-label" for="pago2">
+              Transferencia Bancaria
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card bg-dark text-light border-secondary">
+        <div class="card-header border-secondary">
+          <h5 class="mb-0">Resumen</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal</span>
+            <span>$850.000</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Envío</span>
+            <span>$5.000</span>
+          </div>
+          <hr class="border-secondary">
+          <div class="d-flex justify-content-between mb-4">
+            <strong class="fs-5">Total</strong>
+            <strong class="fs-5" style="color: var(--accent);">$855.000</strong>
+          </div>
+          
+          <a href="{% url 'pago_exitoso' %}" class="btn btn-success w-100 mb-2">Realizar Pago</a>
+          <button class="btn btn-outline-danger w-100" onclick="alert('Pago rechazado. Intente nuevamente.')">Simular Pago Fallido</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

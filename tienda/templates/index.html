@@ -1,114 +1,71 @@
 {% extends 'base.html' %}
 
-{% block title %}Inicio - Bibliotecas Para Todos{% endblock %}
+{% block title %}Inicio - Sinewave{% endblock %}
 
 {% block content %}
-<section class="hero-section">
-  <div class="container text-center">
-    <h1 class="mb-3">Tu biblioteca digital, organizada</h1>
-    <p class="mb-4">
-      Dos experiencias: administración para bibliotecarios y catálogo para
-      lectores.
+<section class="hero-section" style="background: linear-gradient(135deg, var(--primary) 0%, #000 100%);">
+  <div class="container text-center text-light">
+    <h1 class="mb-3" style="color: var(--accent);">El Sonido de Music Pro</h1>
+    <p class="mb-4 text-light">
+      Encuentra los mejores instrumentos musicales y equipos de audio para tus conciertos y estudios.
     </p>
     <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <a href="/biblioteca/" class="btn btn-light btn-lg px-4"
-        ><i class="bi bi-shop me-1"></i>Ir a Biblioteca</a
-      >
-      <a href="/admin/" class="btn btn-outline-light btn-lg px-4"
-        >Panel Admin</a
+      <a href="#catalogo" class="btn btn-primary btn-lg px-4"
+        ><i class="bi bi-music-note-list me-1"></i>Ver Catálogo</a
       >
     </div>
   </div>
 </section>
 
-<section class="container py-5">
-  <div class="row g-4 text-center mb-5">
-    <div class="col-md-4">
-      <div class="stat-card">
-        <div class="stat-number">1,250+</div>
-        <div class="stat-label">Libros Registrados</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="stat-card">
-        <div class="stat-number">340+</div>
-        <div class="stat-label">Usuarios Activos</div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="stat-card">
-        <div class="stat-number">890+</div>
-        <div class="stat-label">Prestamos Realizados</div>
-      </div>
+<section id="catalogo" class="container py-5">
+  <h2 class="text-center mb-4 text-light">Catálogo de Productos</h2>
+  
+  <!-- Flujo: ¿Desea buscar un producto específico? -> Usar categorías, filtros y opciones de búsqueda -->
+  <div class="row mb-4 justify-content-center">
+    <div class="col-md-6">
+      <form class="d-flex" action="#catalogo" method="get">
+        <input class="form-control me-2 bg-dark text-light border-secondary" type="search" placeholder="Buscar instrumentos, marcas..." aria-label="Search">
+        <button class="btn btn-outline-light" type="submit"><i class="bi bi-search"></i></button>
+      </form>
     </div>
   </div>
-
-  <h2 class="text-center mb-4">Nuestros Servicios</h2>
-  <div class="row g-4 mb-5">
-    <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <i class="bi bi-people-fill"></i>
-        <h5>Gestion de Usuarios</h5>
-        <p class="text-muted">
-          Administra registros de usuarios, datos de contacto y historial de
-          prestamos.
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <i class="bi bi-book-fill"></i>
-        <h5>Catalogo de Libros</h5>
-        <p class="text-muted">
-          Cataloga todos los libros con informacion detallada y
-          disponibilidad en tiempo real.
-        </p>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="card feature-card h-100">
-        <i class="bi bi-arrow-left-right"></i>
-        <h5>Prestamos</h5>
-        <p class="text-muted">
-          Controla prestamos y devoluciones con fechas y estados
-          actualizados.
-        </p>
-      </div>
-    </div>
+  <div class="d-flex justify-content-center gap-2 mb-5 flex-wrap">
+    <button class="btn btn-primary btn-sm">Todas las Categorías</button>
+    <button class="btn btn-outline-secondary btn-sm text-light">Guitarras y Bajos</button>
+    <button class="btn btn-outline-secondary btn-sm text-light">Teclados</button>
+    <button class="btn btn-outline-secondary btn-sm text-light">Audio Profesional</button>
   </div>
 
-  <h2 class="text-center mb-4">Libros Destacados</h2>
-  <div class="row g-4" id="featuredBooks"></div>
-</section>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-  fetch("data.json")
-    .then((r) => r.json())
-    .then((data) => {
-      const container = document.getElementById("featuredBooks");
-      if (!container || !data.libros) return;
-      const available = data.libros
-        .filter((l) => l.disponibles > 0)
-        .slice(0, 4);
-      container.innerHTML = available
-        .map(
-          (libro) => `
-      <div class="col-md-3">
-        <div class="card h-100">
-          <div class="card-body text-center">
-            <i class="bi bi-book text-primary" style="font-size:2.5rem"></i>
-            <h5 class="card-title mt-2">${libro.titulo}</h5>
-            <p class="text-muted small mb-1">${libro.autor}</p>
-            <p class="text-muted small">${libro.genero} - ${libro.anio}</p>
-            <span class="badge bg-success">${libro.disponibles} disponibles</span>
-          </div>
+  <div class="row g-4">
+    {% for producto in productos %}
+    <div class="col-md-3">
+      <div class="card h-100" style="border: 1px solid var(--border);">
+        <div class="card-body text-center">
+          <!-- Icon depending on category, or generic if none -->
+          {% if "Guitarra" in producto.nombre %}
+            <i class="bi bi-guitar text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
+          {% elif "Teclado" in producto.nombre or "Piano" in producto.nombre %}
+            <i class="bi bi-music-player text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
+          {% elif "Micrófono" in producto.nombre %}
+            <i class="bi bi-mic text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
+          {% else %}
+            <i class="bi bi-speaker text-primary" style="font-size:2.5rem; color: var(--accent) !important;"></i>
+          {% endif %}
+          
+          <h5 class="card-title mt-2 text-light">{{ producto.nombre }}</h5>
+          <p class="fw-bold fs-5" style="color: var(--accent);">${{ producto.precio }}</p>
+          
+          {% if producto.stock > 0 %}
+            <span class="badge bg-success mb-3">{{ producto.stock }} en stock</span>
+            <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100">Agregar al Carrito</a>
+          {% else %}
+            <span class="badge bg-danger mb-3">Agotado</span>
+            <button class="btn btn-outline-secondary w-100" disabled>Sin Stock</button>
+          {% endif %}
         </div>
       </div>
-    `,
-        )
-        .join("");
-    });
-</script>
+    </div>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}
