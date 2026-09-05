@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Inicio - Sinewave{% endblock %}
 
@@ -78,7 +79,7 @@
         <a href="{% url 'categoria' 'bajos' %}" class="text-decoration-none">
           <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
             <div class="card-body py-4 px-2">
-              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="https://images.unsplash.com/photo-1485030056468-3820ff9e6e90?auto=format&fit=crop&w=300&q=80" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
+              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="{% static 'img/cat_bajos.png' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
               <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Bajos</h6>
             </div>
           </div>
@@ -90,7 +91,7 @@
         <a href="{% url 'categoria' 'ukeleles' %}" class="text-decoration-none">
           <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
             <div class="card-body py-4 px-2">
-              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="https://images.unsplash.com/photo-1512404550810-754f0aeb5a21?auto=format&fit=crop&w=300&q=80" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
+              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="{% static 'img/cat_ukeleles.png' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
               <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Ukeleles</h6>
             </div>
           </div>
@@ -114,7 +115,7 @@
         <a href="{% url 'categoria' 'teclados' %}" class="text-decoration-none">
           <div class="card border-0 text-center h-100 categoria-tile" style="background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border) !important; transition: all 0.3s;">
             <div class="card-body py-4 px-2">
-              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="https://images.unsplash.com/photo-1579737482811-3841a0e70db6?auto=format&fit=crop&w=300&q=80" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
+              <div class="mb-3 mx-auto" style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--border); box-shadow: 0 4px 8px rgba(0,0,0,0.5);"><img src="{% static 'img/cat_teclados.png' %}" style="width: 100%; height: 100%; object-fit: cover;" alt="Categoría"></div>
               <h6 class="fw-bold text-light mb-0" style="font-size: 0.9rem;">Teclados</h6>
             </div>
           </div>
