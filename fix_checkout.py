@@ -1,4 +1,7 @@
+with open('/home/maria/sinewave/tienda/templates/checkout.html', 'r') as f:
+    content = f.read()
 
+new_html = """
 {% extends 'base.html' %}
 
 {% block title %}Checkout - Sinewave{% endblock %}
@@ -146,3 +149,9 @@
   });
 </script>
 {% endblock %}
+"""
+
+with open('/home/maria/sinewave/tienda/templates/checkout.html', 'w') as f:
+    f.write(new_html)
+
+print("Checkout patched")

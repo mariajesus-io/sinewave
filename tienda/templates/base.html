@@ -177,9 +177,17 @@
       <i class="bi bi-whatsapp" style="font-size: 2rem;"></i>
     </a>
 
+
 <script>
   function addToCart(nombre, precio, imagen, redirectUrl) {
-    let cart = JSON.parse(localStorage.getItem('sinewave_cart')) || [];
+    let rawCart = localStorage.getItem('sinewave_cart');
+    let cart = [];
+    try {
+      cart = JSON.parse(rawCart) || [];
+      if (!Array.isArray(cart)) cart = [];
+    } catch (e) {
+      cart = [];
+    }
     
     // Check if item exists
     let existingItem = cart.find(item => item.nombre === nombre);
@@ -196,12 +204,12 @@
     
     localStorage.setItem('sinewave_cart', JSON.stringify(cart));
     
-    // Optional: show a toast or alert, but redirecting to cart is easiest
     if (redirectUrl) {
       window.location.href = redirectUrl;
     }
   }
 </script>
 </body>
+
 
 </html>

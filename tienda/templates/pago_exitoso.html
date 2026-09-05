@@ -21,3 +21,11 @@
 </div>
 {% endblock %}
 
+
+{% block extra_js %}
+<script>
+  // El pago se ha procesado correctamente
+  // Limpiamos el carrito local
+  localStorage.removeItem('sinewave_cart');
+</script>
+{% endblock %}

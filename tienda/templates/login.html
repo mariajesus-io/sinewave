@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Iniciar Sesión - Sinewave Music Pro{% endblock %}
 
@@ -97,12 +98,30 @@
       
       const email = document.getElementById("email").value;
       const pass = document.getElementById("contrasena").value;
+      const errorMsg = document.getElementById("error-msg");
 
       if (email === "admin@sinewave.cl" && pass === "admin123") {
         window.location.href = "/admin/";
-      } else {
-        window.location.href = "{% url 'checkout' %}";
+        return;
       }
+      
+      let users = JSON.parse(localStorage.getItem('sinewave_users')) || [];
+      let foundUser = users.find(u => u.email === email);
+      
+      if (!foundUser) {
+        errorMsg.innerHTML = 'No existe una cuenta con este correo. Por favor, <a href="{% url 'registro' %}">crea una cuenta nueva aquí</a>.';
+        errorMsg.classList.remove('d-none');
+        return;
+      }
+      
+      if (foundUser.pass !== pass) {
+        errorMsg.textContent = 'Contraseña incorrecta. Por favor, intenta de nuevo.';
+        errorMsg.classList.remove('d-none');
+        return;
+      }
+      
+      errorMsg.classList.add('d-none');
+      window.location.href = "{% url 'checkout' %}";
     });
 </script>
 {% endblock %}

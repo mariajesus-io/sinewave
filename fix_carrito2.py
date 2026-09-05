@@ -1,52 +1,8 @@
-{% extends 'base.html' %}
+with open('/home/maria/sinewave/tienda/templates/carrito.html', 'r') as f:
+    content = f.read()
 
-{% block title %}Carrito - Sinewave{% endblock %}
-
-{% block content %}
-<div class="container py-5">
-  <h2 class="text-center mb-4 text-light">Carrito de Compras</h2>
-  
-  <div class="row">
-    <div class="col-md-8" id="cart-items-container">
-      <!-- Items will be injected here via JS -->
-      <div class="text-center py-5 text-muted d-none" id="empty-cart-msg">
-        <i class="bi bi-cart-x mb-3 d-block" style="font-size: 3rem;"></i>
-        <h5>Tu carrito está vacío</h5>
-        <a href="{% url 'inicio' %}" class="btn btn-outline-light mt-3">Volver a la tienda</a>
-      </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card bg-dark text-light border-secondary position-sticky" style="top: 20px;">
-        <div class="card-header border-secondary">
-          <h5 class="mb-0">Resumen del Pedido</h5>
-        </div>
-        <div class="card-body">
-          <div class="d-flex justify-content-between mb-2">
-            <span>Subtotal</span>
-            <span id="subtotal">$0</span>
-          </div>
-          <div class="d-flex justify-content-between mb-3">
-            <span>Descuento</span>
-            <span>$0</span>
-          </div>
-          <hr class="border-secondary">
-          <div class="d-flex justify-content-between mb-4">
-            <strong class="fs-5">Total</strong>
-            <strong class="fs-5" style="color: var(--accent);" id="total">$0</strong>
-          </div>
-          
-          <a href="{% url 'login' %}?next={% url 'checkout' %}" class="btn btn-primary w-100 mb-2" id="btn-checkout">Proceder al Pago</a>
-          <a href="{% url 'inicio' %}" class="btn btn-outline-secondary w-100 text-light">Seguir Comprando</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
-
-{% block extra_js %}
-
+# Make sure cart is an array and logic is robust
+new_js = """
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('cart-items-container');
@@ -166,5 +122,13 @@
     renderCart();
   });
 </script>
+"""
 
-{% endblock %}
+import re
+# Replace old script with new script
+content = re.sub(r'<script>.*?</script>', new_js, content, flags=re.DOTALL)
+
+with open('/home/maria/sinewave/tienda/templates/carrito.html', 'w') as f:
+    f.write(content)
+
+print("Carrito logic patched")
