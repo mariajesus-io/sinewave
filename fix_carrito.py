@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+html_content = """{% extends 'base.html' %}
 
 {% block title %}Carrito - Sinewave{% endblock %}
 
@@ -156,3 +156,9 @@
   });
 </script>
 {% endblock %}
+"""
+
+with open('/home/maria/sinewave/tienda/templates/carrito.html', 'w') as f:
+    f.write(html_content)
+
+print("Carrito updated")

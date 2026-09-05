@@ -16,16 +16,16 @@ CATALOGO = {
         "nombre": "Bajos",
         "icono": "bi-soundwave",
         "productos": [
-            {"nombre": "Bajo Eléctrico Ibanez SR300", "precio": 450000, "stock": 4, "imagen": "https://images.unsplash.com/photo-1550993473-f61b0c036329?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Bajo Fender Precision Bass", "precio": 980000, "stock": 2, "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Bajo Eléctrico Ibanez SR300", "precio": 450000, "stock": 4, "imagen": "/static/img/prod_ibanez_sr300.png"},
+            {"nombre": "Bajo Fender Precision Bass", "precio": 980000, "stock": 2, "imagen": "/static/img/prod_fender_pbass.png"},
         ]
     },
     "ukeleles": {
         "nombre": "Ukeleles",
         "icono": "bi-music-note-beamed",
         "productos": [
-            {"nombre": "Ukelele Soprano Kala MK-S", "precio": 55000, "stock": 15, "imagen": "https://images.unsplash.com/photo-1574093581484-89c6f5a7b6e0?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Ukelele Tenor Fender Venice", "precio": 120000, "stock": 8, "imagen": "https://images.unsplash.com/photo-1501612780327-45045538702b?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Ukelele Soprano Kala MK-S", "precio": 55000, "stock": 15, "imagen": "/static/img/prod_ukelele_soprano.png"},
+            {"nombre": "Ukelele Tenor Fender Venice", "precio": 120000, "stock": 8, "imagen": "/static/img/prod_ukelele_tenor.png"},
         ]
     },
     "pianos": {
@@ -57,8 +57,8 @@ CATALOGO = {
         "nombre": "Amplificadores",
         "icono": "bi-speaker",
         "productos": [
-            {"nombre": "Amplificador Fender Champion 20", "precio": 185000, "stock": 7, "imagen": "https://images.unsplash.com/photo-1558098329-a11cff621064?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Amplificador Marshall MG15", "precio": 160000, "stock": 4, "imagen": "https://images.unsplash.com/photo-1588678697769-c48e44a4b3a3?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Amplificador Fender Champion 20", "precio": 185000, "stock": 7, "imagen": "/static/img/prod_fender_amp.jpg"},
+            {"nombre": "Amplificador Marshall MG15", "precio": 160000, "stock": 4, "imagen": "/static/img/prod_marshall.jpg"},
         ]
     },
     "audio-profesional": {
@@ -82,7 +82,7 @@ CATALOGO = {
         "nombre": "DJ",
         "icono": "bi-disc",
         "productos": [
-            {"nombre": "Controladora DJ Pioneer DDJ-200", "precio": 450000, "stock": 18, "imagen": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Controladora DJ Pioneer DDJ-200", "precio": 450000, "stock": 18, "imagen": "/static/img/prod_pioneer_ddj200.png"},
             {"nombre": "Auriculares DJ Sennheiser HD 25", "precio": 210000, "stock": 6, "imagen": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80"},
         ]
     },
@@ -92,7 +92,7 @@ MAS_VISTOS = [
     {"nombre": "Guitarra Eléctrica Fender Stratocaster", "imagen": "https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?auto=format&fit=crop&w=500&q=80", "categoria": "guitarras"},
     {"nombre": "Batería Acústica Tama Imperialstar", "imagen": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=500&q=80", "categoria": "bateria"},
     {"nombre": "Sintetizador Korg Kross 2", "imagen": "/static/img/prod_korg_kross.png", "categoria": "teclados"},
-    {"nombre": "Controladora DJ Pioneer DDJ-200", "imagen": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80", "categoria": "dj"},
+    {"nombre": "Controladora DJ Pioneer DDJ-200", "imagen": "/static/img/prod_pioneer_ddj200.png", "categoria": "dj"},
     {"nombre": "Audífonos Audio-Technica M50x", "imagen": "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80", "categoria": "audio-hogar"},
     {"nombre": "Monitores KRK Rokit 5", "imagen": "/static/img/prod_krk_rokit.png", "categoria": "audio-profesional"},
 ]
@@ -160,3 +160,6 @@ def historial(request):
     return render(request, 'historial.html')
 
 
+
+def cajas_sorpresa(request):
+    return render(request, 'cajas_sorpresa.html')

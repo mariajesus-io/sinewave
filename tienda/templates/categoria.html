@@ -49,15 +49,18 @@
         {% for producto in cat.productos %}
         <div class="col-md-4">
           <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
-            <div style="height: 200px; overflow: hidden; background: #fff;">
+            <div style="height: 200px; overflow: hidden; background: #fff; position: relative;">
               <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
+              <button onclick="toggleFavorite('{{ producto.nombre|escapejs }}', this)" class="btn btn-sm btn-light shadow-sm position-absolute rounded-circle" style="top: 10px; right: 10px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10;">
+                <i class="bi bi-heart fav-icon" data-name="{{ producto.nombre|escapejs }}" style="color: #dc3545; font-size: 1.1rem;"></i>
+              </button>
             </div>
             <div class="card-body text-center d-flex flex-column">
               <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.05rem;">{{ producto.nombre }}</h5>
               <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
               {% if producto.stock > 0 %}
                 <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
-                <a href="{% url 'carrito' %}" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</a>
+                <button type="button" onclick="addToCart('{{ producto.nombre|escapejs }}', {{ producto.precio }}, '{{ producto.imagen|escapejs }}', '{% url 'carrito' %}')" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</button>
               {% else %}
                 <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
                 <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>
@@ -77,3 +80,38 @@
 </div>
 {% endblock %}
 
+
+{% block extra_js %}
+<script>
+  function toggleFavorite(nombre, btnElement) {
+    let favs = JSON.parse(localStorage.getItem('sinewave_favs')) || [];
+    let icon = btnElement.querySelector('.fav-icon');
+    
+    if (favs.includes(nombre)) {
+      // Remove from favorites
+      favs = favs.filter(item => item !== nombre);
+      icon.classList.remove('bi-heart-fill');
+      icon.classList.add('bi-heart');
+    } else {
+      // Add to favorites
+      favs.push(nombre);
+      icon.classList.remove('bi-heart');
+      icon.classList.add('bi-heart-fill');
+    }
+    
+    localStorage.setItem('sinewave_favs', JSON.stringify(favs));
+  }
+
+  // Set initial state of hearts on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    let favs = JSON.parse(localStorage.getItem('sinewave_favs')) || [];
+    document.querySelectorAll('.fav-icon').forEach(icon => {
+      let nombre = icon.getAttribute('data-name');
+      if (favs.includes(nombre)) {
+        icon.classList.remove('bi-heart');
+        icon.classList.add('bi-heart-fill');
+      }
+    });
+  });
+</script>
+{% endblock %}
