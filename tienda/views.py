@@ -40,17 +40,17 @@ CATALOGO = {
         "nombre": "Teclados",
         "icono": "bi-keyboard",
         "productos": [
-            {"nombre": "Sintetizador Korg Kross 2", "precio": 650000, "stock": 3, "imagen": "https://images.unsplash.com/photo-1595069906974-f370baae6bd5?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Teclado Arranger Casio CT-S300", "precio": 80000, "stock": 20, "imagen": "https://images.unsplash.com/photo-1617471346061-5d329ab9c574?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Sintetizador Korg Kross 2", "precio": 650000, "stock": 15, "imagen": "/static/img/prod_korg_kross.png"},
+            {"nombre": "Teclado Arranger Casio CT-S300", "precio": 80000, "stock": 20, "imagen": "/static/img/prod_casio_cts300.png"},
         ]
     },
     "bateria": {
         "nombre": "Batería y Percusión",
         "icono": "bi-grid",
         "productos": [
-            {"nombre": "Batería Acústica Tama Imperialstar", "precio": 1200000, "stock": 2, "imagen": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Batería Electrónica Roland TD-1K", "precio": 750000, "stock": 5, "imagen": "https://images.unsplash.com/photo-1543791959-12b3f54308ed?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Cajón Flamenco Meinl", "precio": 95000, "stock": 10, "imagen": "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Batería Acústica Tama Imperialstar", "precio": 1200000, "stock": 24, "imagen": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Batería Electrónica Roland TD-1K", "precio": 750000, "stock": 5, "imagen": "/static/img/prod_roland.png"},
+            {"nombre": "Cajón Flamenco Meinl", "precio": 95000, "stock": 10, "imagen": "/static/img/prod_cajon.jpg"},
         ]
     },
     "amplificadores": {
@@ -65,16 +65,16 @@ CATALOGO = {
         "nombre": "Audio Profesional",
         "icono": "bi-mic",
         "productos": [
-            {"nombre": "Micrófono Dinámico Shure SM58", "precio": 95000, "stock": 0, "imagen": "https://images.unsplash.com/photo-1525926477800-7a3aa30eb2ab?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Interfaz de Audio Focusrite Scarlett", "precio": 180000, "stock": 0, "imagen": "https://images.unsplash.com/photo-1610931580956-620579e00661?auto=format&fit=crop&w=500&q=80"},
-            {"nombre": "Monitores de Estudio KRK Rokit 5", "precio": 350000, "stock": 4, "imagen": "https://images.unsplash.com/photo-1565576771691-0d3ee77bbdd1?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Micrófono Dinámico Shure SM58", "precio": 95000, "stock": 25, "imagen": "/static/img/prod_shure_sm58.png"},
+            {"nombre": "Interfaz de Audio Focusrite Scarlett", "precio": 180000, "stock": 12, "imagen": "/static/img/prod_focusrite.png"},
+            {"nombre": "Monitores de Estudio KRK Rokit 5", "precio": 350000, "stock": 20, "imagen": "/static/img/prod_krk_rokit.png"},
         ]
     },
     "audio-hogar": {
         "nombre": "Audio Hogar y Estudio",
         "icono": "bi-house",
         "productos": [
-            {"nombre": "Audífonos de Estudio Audio-Technica M50x", "precio": 150000, "stock": 10, "imagen": "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Audífonos de Estudio Audio-Technica M50x", "precio": 150000, "stock": 35, "imagen": "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80"},
             {"nombre": "Parlante JBL Flip 6", "precio": 95000, "stock": 18, "imagen": "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=500&q=80"},
         ]
     },
@@ -82,7 +82,7 @@ CATALOGO = {
         "nombre": "DJ",
         "icono": "bi-disc",
         "productos": [
-            {"nombre": "Controladora DJ Pioneer DDJ-200", "precio": 450000, "stock": 3, "imagen": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80"},
+            {"nombre": "Controladora DJ Pioneer DDJ-200", "precio": 450000, "stock": 18, "imagen": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80"},
             {"nombre": "Auriculares DJ Sennheiser HD 25", "precio": 210000, "stock": 6, "imagen": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=500&q=80"},
         ]
     },
@@ -91,10 +91,10 @@ CATALOGO = {
 MAS_VISTOS = [
     {"nombre": "Guitarra Eléctrica Fender Stratocaster", "imagen": "https://images.unsplash.com/photo-1564186763535-ebb21ef5277f?auto=format&fit=crop&w=500&q=80", "categoria": "guitarras"},
     {"nombre": "Batería Acústica Tama Imperialstar", "imagen": "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=500&q=80", "categoria": "bateria"},
-    {"nombre": "Sintetizador Korg Kross 2", "imagen": "https://images.unsplash.com/photo-1595069906974-f370baae6bd5?auto=format&fit=crop&w=500&q=80", "categoria": "teclados"},
+    {"nombre": "Sintetizador Korg Kross 2", "imagen": "/static/img/prod_korg_kross.png", "categoria": "teclados"},
     {"nombre": "Controladora DJ Pioneer DDJ-200", "imagen": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?auto=format&fit=crop&w=500&q=80", "categoria": "dj"},
     {"nombre": "Audífonos Audio-Technica M50x", "imagen": "https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=500&q=80", "categoria": "audio-hogar"},
-    {"nombre": "Monitores KRK Rokit 5", "imagen": "https://images.unsplash.com/photo-1565576771691-0d3ee77bbdd1?auto=format&fit=crop&w=500&q=80", "categoria": "audio-profesional"},
+    {"nombre": "Monitores KRK Rokit 5", "imagen": "/static/img/prod_krk_rokit.png", "categoria": "audio-profesional"},
 ]
 
 MARCAS = [

@@ -49,8 +49,8 @@
         {% for producto in cat.productos %}
         <div class="col-md-4">
           <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
-            <div style="height: 200px; overflow: hidden; background: #000;">
-              <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover; opacity: 0.9;" alt="{{ producto.nombre }}">
+            <div style="height: 200px; overflow: hidden; background: #fff;">
+              <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
             </div>
             <div class="card-body text-center d-flex flex-column">
               <h5 class="card-title mt-2 text-light flex-grow-1" style="font-size: 1.05rem;">{{ producto.nombre }}</h5>
