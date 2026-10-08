@@ -24,12 +24,17 @@ class Usuario(models.Model):
     nombre_completo = models.CharField(max_length=150)
     correo = models.EmailField(unique=True)
     telefono = models.CharField(max_length=20, blank=True)
+    # Campos agregados después (migración 0002) para mostrar cómo se modifica un modelo.
+    # db_index (migración 0003) hace que ordenar y filtrar por fecha sea rápido con muchos datos.
+    fecha_registro = models.DateTimeField(default=timezone.now, db_index=True)
+    activo = models.BooleanField(default=True)
     # Un rol tiene muchos usuarios (1 a N). PROTECT: no deja borrar un rol en uso.
     rol = models.ForeignKey(Rol, on_delete=models.PROTECT, related_name="usuarios")
 
     class Meta:
         verbose_name = "usuario"
         verbose_name_plural = "usuarios"
+        ordering = ["-fecha_registro"]
 
     def __str__(self):
         return self.nombre_completo
@@ -74,7 +79,7 @@ class Pedido(models.Model):
         ENTREGADO = "entregado", "Entregado"
         CANCELADO = "cancelado", "Cancelado"
 
-    fecha_creacion = models.DateTimeField(default=timezone.now)
+    fecha_creacion = models.DateTimeField(default=timezone.now, db_index=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
     total = models.DecimalField(max_digits=12, decimal_places=0, default=0)
     # Un usuario tiene muchos pedidos (1 a N). CASCADE: si se borra el usuario, se borran sus pedidos.
