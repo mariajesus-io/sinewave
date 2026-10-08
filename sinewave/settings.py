@@ -134,6 +134,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "tienda/static"),
 ]
 
+# Archivos que se suben desde el admin (fotos de productos)
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

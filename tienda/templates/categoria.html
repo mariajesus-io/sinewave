@@ -50,8 +50,8 @@
         <div class="col-md-4">
           <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
             <div style="height: 200px; overflow: hidden; background: #fff; position: relative;">
-              {% if producto.imagen %}
-              <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
+              {% if producto.url_imagen %}
+              <img src="{{ producto.url_imagen }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
               {% else %}
               <div class="w-100 h-100 d-flex align-items-center justify-content-center text-secondary"><i class="bi {{ cat.icono }}" style="font-size: 4rem;"></i></div>
               {% endif %}
@@ -64,7 +64,7 @@
               <p class="fw-bold fs-5 mb-2" style="color: var(--accent);">${{ producto.precio }}</p>
               {% if producto.stock > 0 %}
                 <span class="badge bg-success mb-3 align-self-center">{{ producto.stock }} en stock</span>
-                <button type="button" onclick="addToCart('{{ producto.nombre|escapejs }}', {{ producto.precio }}, '{{ producto.imagen|escapejs }}', '{% url 'carrito' %}')" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</button>
+                <button type="button" onclick="addToCart('{{ producto.nombre|escapejs }}', {{ producto.precio }}, '{{ producto.url_imagen|escapejs }}', '{% url 'carrito' %}')" class="btn btn-outline-light w-100 mt-auto" style="border-radius: 8px;">Agregar al Carrito</button>
               {% else %}
                 <span class="badge bg-danger mb-3 align-self-center">Agotado</span>
                 <button class="btn btn-outline-secondary w-100 mt-auto" style="border-radius: 8px;" disabled>Sin Stock</button>

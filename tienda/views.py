@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.db.models import BooleanField, ExpressionWrapper, Q
 from django.shortcuts import get_object_or_404, render
 
 from .models import Categoria, Marca, Producto
@@ -15,8 +16,9 @@ def inicio(request):
 
 def categoria(request, slug):
     cat = get_object_or_404(Categoria, slug=slug, activa=True)
-    # "-imagen" deja al final los productos sin imagen (los que crea poblar_datos con Faker).
-    productos = cat.productos.select_related("marca").order_by("-imagen", "nombre")
+    # Los productos sin foto ni imagen (los que crea poblar_datos con Faker) quedan al final.
+    tiene_imagen = ExpressionWrapper(~Q(foto="") | ~Q(imagen=""), output_field=BooleanField())
+    productos = cat.productos.select_related("marca").order_by(tiene_imagen.desc(), "nombre")
     # Con 1 millón de productos de prueba no se pueden mostrar todos: se muestran de a 12.
     pagina = Paginator(productos, 12).get_page(request.GET.get("page"))
     return render(request, 'categoria.html', {"cat": cat, "slug": slug, "pagina": pagina})

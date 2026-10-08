@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Categoria, DetallePedido, Marca, Pago, Pedido, Producto, Rol, Usuario
 
@@ -49,17 +50,31 @@ class MarcaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ["codigo_sku", "nombre", "marca", "categoria", "precio", "stock", "destacado", "es_caja_sorpresa"]
+    list_display = ["miniatura", "codigo_sku", "nombre", "marca", "categoria", "precio", "stock", "destacado", "es_caja_sorpresa"]
     list_filter = ["categoria", "marca", "destacado", "es_caja_sorpresa"]
     search_fields = ["codigo_sku", "nombre"]
     list_editable = ["precio", "stock", "destacado"]   # se editan directo desde la lista
     list_select_related = ["categoria", "marca"]
     list_per_page = 25
+    readonly_fields = ["vista_previa"]
     # Organiza el formulario de edición en secciones
     fieldsets = [
-        ("Datos básicos", {"fields": ["codigo_sku", "nombre", "descripcion", "categoria", "marca", "imagen"]}),
+        ("Datos básicos", {"fields": ["codigo_sku", "nombre", "descripcion", "categoria", "marca"]}),
+        ("Foto", {"fields": ["vista_previa", "foto", "imagen"]}),
         ("Precio e inventario", {"fields": ["precio", "stock", "es_caja_sorpresa", "destacado"]}),
     ]
+
+    @admin.display(description="Foto")
+    def miniatura(self, obj):
+        if not obj.url_imagen:
+            return "-"
+        return format_html('<img src="{}" style="height: 40px; width: 40px; object-fit: cover; border-radius: 4px;">', obj.url_imagen)
+
+    @admin.display(description="Foto actual")
+    def vista_previa(self, obj):
+        if not obj.url_imagen:
+            return "Sin foto"
+        return format_html('<img src="{}" style="max-height: 200px; max-width: 300px; border-radius: 6px;">', obj.url_imagen)
 
 
 # Los "inlines" muestran los detalles y pagos DENTRO del formulario del pedido

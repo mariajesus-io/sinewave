@@ -74,7 +74,10 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=0)  # pesos chilenos, sin decimales
     stock = models.PositiveIntegerField(default=0)
     es_caja_sorpresa = models.BooleanField(default=False)
-    imagen = models.CharField(max_length=300, blank=True, help_text="URL o ruta /static/... de la imagen")
+    # La foto se sube desde el admin y se guarda en media/productos/. Si no hay foto,
+    # se usa "imagen" (una URL o ruta /static/..., como los productos que ya existían).
+    foto = models.ImageField(upload_to="productos/", blank=True, help_text="Sube una foto desde tu computador")
+    imagen = models.CharField("URL de imagen", max_length=300, blank=True, help_text="Se usa solo si no hay foto subida. URL o ruta /static/...")
     # Los destacados son los que aparecen en "Lo más visto" de la página de inicio.
     destacado = models.BooleanField(default=False)
     # Una categoría tiene muchos productos (1 a N).
@@ -89,6 +92,11 @@ class Producto(models.Model):
 
     def __str__(self):
         return f"{self.nombre} ({self.codigo_sku})"
+
+    @property
+    def url_imagen(self):
+        """La foto subida si existe; si no, la URL de imagen (puede ser vacía)."""
+        return self.foto.url if self.foto else self.imagen
 
 
 class Pedido(models.Model):
