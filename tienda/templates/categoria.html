@@ -46,11 +46,15 @@
     <!-- Catálogo de Productos -->
     <div class="col-md-9">
       <div class="row g-4">
-        {% for producto in cat.productos %}
+        {% for producto in pagina %}
         <div class="col-md-4">
           <div class="card h-100 shadow-sm" style="border: 1px solid var(--border); background: var(--card-bg); border-radius: 12px; overflow: hidden;">
             <div style="height: 200px; overflow: hidden; background: #fff; position: relative;">
+              {% if producto.imagen %}
               <img src="{{ producto.imagen }}" class="w-100 h-100" style="object-fit: cover;" alt="{{ producto.nombre }}">
+              {% else %}
+              <div class="w-100 h-100 d-flex align-items-center justify-content-center text-secondary"><i class="bi {{ cat.icono }}" style="font-size: 4rem;"></i></div>
+              {% endif %}
               <button onclick="toggleFavorite('{{ producto.nombre|escapejs }}', this)" class="btn btn-sm btn-light shadow-sm position-absolute rounded-circle" style="top: 10px; right: 10px; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10;">
                 <i class="bi bi-heart fav-icon" data-name="{{ producto.nombre|escapejs }}" style="color: #dc3545; font-size: 1.1rem;"></i>
               </button>
@@ -75,6 +79,18 @@
         </div>
         {% endfor %}
       </div>
+
+      {% if pagina.has_other_pages %}
+      <nav class="mt-5 d-flex justify-content-center align-items-center gap-3 text-muted">
+        {% if pagina.has_previous %}
+          <a href="?page={{ pagina.previous_page_number }}" class="btn btn-sm btn-outline-light"><i class="bi bi-chevron-left"></i> Anterior</a>
+        {% endif %}
+        <span class="small">Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+        {% if pagina.has_next %}
+          <a href="?page={{ pagina.next_page_number }}" class="btn btn-sm btn-outline-light">Siguiente <i class="bi bi-chevron-right"></i></a>
+        {% endif %}
+      </nav>
+      {% endif %}
     </div>
   </div>
 </div>

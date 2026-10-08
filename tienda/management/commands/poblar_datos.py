@@ -6,7 +6,9 @@ Uso:
     python manage.py poblar_datos 1000000 --limpiar
 
 Crea la cantidad indicada de usuarios, productos, pedidos, detalles y pagos
-(cada pedido trae 1 detalle y 1 pago). Los roles y categorías son fijos.
+(cada pedido trae 1 detalle y 1 pago). Los roles, categorías y marcas son fijos.
+Los productos de prueba usan SKU "SKU-...", así --limpiar no borra el catálogo
+real de la tienda (SKU "SW-...", cargado por la migración 0005).
 """
 import random
 import time
@@ -18,7 +20,7 @@ from django.db.models import Max
 from django.utils import timezone
 from faker import Faker
 
-from tienda.models import Categoria, DetallePedido, Pago, Pedido, Producto, Rol, Usuario
+from tienda.models import Categoria, DetallePedido, Marca, Pago, Pedido, Producto, Rol, Usuario
 
 ROLES = ["Cliente", "Vendedor", "Administrador"]
 CATEGORIAS = ["Guitarras", "Bajos", "Ukeleles", "Pianos", "Teclados", "Batería y Percusión",
@@ -47,9 +49,10 @@ class Command(BaseCommand):
         # Roles y categorías: pocos y fijos. get_or_create no los duplica si ya existen.
         roles = [Rol.objects.get_or_create(nombre=n)[0] for n in ROLES]
         categorias = [Categoria.objects.get_or_create(nombre=n)[0] for n in CATEGORIAS]
+        marcas = [Marca.objects.get_or_create(nombre=n)[0] for n in MARCAS]
 
         self.crear_usuarios(cantidad, roles)
-        self.crear_productos(cantidad, categorias)
+        self.crear_productos(cantidad, categorias, marcas)
         self.crear_pedidos(cantidad)
 
         segundos = time.time() - inicio
@@ -63,8 +66,9 @@ class Command(BaseCommand):
     def limpiar(self):
         self.stdout.write("Borrando datos anteriores...")
         # Se borra de "hijo" a "padre" para respetar las claves foráneas.
-        for modelo in [Pago, DetallePedido, Pedido, Producto, Usuario]:
-            modelo.objects.all()._raw_delete(modelo.objects.db)  # DELETE directo, rápido con millones de filas
+        for qs in [Pago.objects.all(), DetallePedido.objects.all(), Pedido.objects.all(),
+                   Producto.objects.filter(codigo_sku__startswith="SKU-"), Usuario.objects.all()]:
+            qs._raw_delete(qs.db)  # DELETE directo, rápido con millones de filas
 
     def siguiente_numero(self, modelo):
         # Número desde donde seguir, para que correos y SKU no se repitan entre cargas.
@@ -92,21 +96,23 @@ class Command(BaseCommand):
             Usuario.objects.bulk_create(lote)
             self.progreso("Usuarios", desde + len(lote), cantidad)
 
-    def crear_productos(self, cantidad, categorias):
+    def crear_productos(self, cantidad, categorias, marcas):
         fake = self.fake
         n = self.siguiente_numero(Producto)
         for desde in range(0, cantidad, LOTE):
             lote = []
             for _ in range(min(LOTE, cantidad - desde)):
                 categoria = random.choice(categorias)
+                marca = random.choice(marcas)
                 lote.append(Producto(
                     codigo_sku=f"SKU-{n:08d}",
-                    nombre=f"{categoria.nombre.split()[0]} {random.choice(MARCAS)} {fake.bothify('??-###').upper()}",
+                    nombre=f"{categoria.nombre.split()[0]} {marca.nombre} {fake.bothify('??-###').upper()}",
                     descripcion=fake.sentence(nb_words=12),
                     precio=random.randint(10, 1500) * 1000,
                     stock=random.randint(0, 50),
                     es_caja_sorpresa=random.random() < 0.05,
                     categoria=categoria,
+                    marca=marca,
                 ))
                 n += 1
             Producto.objects.bulk_create(lote)

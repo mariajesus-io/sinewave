@@ -67,7 +67,8 @@ Un **modelo** es una clase de Python que representa una **tabla**. Cada atributo
 |---|---|
 | `Rol` | Tipo de usuario (Cliente, Vendedor, Administrador) |
 | `Usuario` | Clientes de la tienda |
-| `Categoria` | Guitarras, Bajos, Pianos... |
+| `Categoria` | Guitarras, Bajos, Pianos... (con slug para la URL, ícono e imagen) |
+| `Marca` | Fender, Yamaha, Roland... |
 | `Producto` | Lo que se vende |
 | `Pedido` | Una compra de un usuario |
 | `DetallePedido` | Cada línea del pedido (producto, cantidad, precio) |
@@ -77,7 +78,8 @@ Un **modelo** es una clase de Python que representa una **tabla**. Cada atributo
 
 | Campo Django | Tipo en la BD | Ejemplo |
 |---|---|---|
-| `CharField(max_length=...)` | VARCHAR | nombre, teléfono |
+| `CharField(max_length=...)` | VARCHAR | nombre, teléfono, imagen (URL) |
+| `SlugField` | VARCHAR, solo letras, números y guiones | slug de la categoría |
 | `TextField` | TEXT (sin límite) | descripción |
 | `EmailField` | VARCHAR, pero valida que sea un correo | correo |
 | `DecimalField` | DECIMAL | precio, total |
@@ -101,6 +103,7 @@ Todas las relaciones son **uno a muchos (1:N)**:
 - Un **Rol** tiene muchos **Usuarios**
 - Un **Usuario** tiene muchos **Pedidos**
 - Una **Categoría** tiene muchos **Productos**
+- Una **Marca** tiene muchos **Productos** (opcional: `null=True`)
 - Un **Pedido** tiene muchos **Detalles** y muchos **Pagos**
 - Un **Producto** aparece en muchos **Detalles**
 
@@ -119,6 +122,7 @@ erDiagram
     ROL ||--o{ USUARIO : "tiene"
     USUARIO ||--o{ PEDIDO : "hace"
     CATEGORIA ||--o{ PRODUCTO : "agrupa"
+    MARCA |o--o{ PRODUCTO : "fabrica"
     PEDIDO ||--o{ DETALLE_PEDIDO : "contiene"
     PRODUCTO ||--o{ DETALLE_PEDIDO : "aparece en"
     PEDIDO ||--o{ PAGO : "se paga con"
@@ -140,7 +144,14 @@ erDiagram
     CATEGORIA {
         int id PK
         varchar nombre UK
+        varchar slug UK
+        varchar icono
+        varchar imagen
         bool activa
+    }
+    MARCA {
+        int id PK
+        varchar nombre UK
     }
     PRODUCTO {
         int id PK
@@ -150,7 +161,10 @@ erDiagram
         decimal precio
         int stock
         bool es_caja_sorpresa
+        varchar imagen
+        bool destacado
         int categoria_id FK
+        int marca_id FK
     }
     PEDIDO {
         int id PK
@@ -191,6 +205,7 @@ erDiagram
 5. **`estado_general` → `estado`**, **`metodo_pago` → `metodo`**: ahora tienen `choices` (valores fijos).
 6. **`subtotal` se calcula solo**: en `DetallePedido.save()` se hace `cantidad * precio_unitario`, y el `total` del pedido se recalcula en el admin.
 7. **Se agregaron** `fecha_registro` y `activo` a Usuario (como ejemplo de una modificación con su propia migración).
+8. **Se agregó `Marca`** y en Producto `imagen`, `destacado` y `marca`; en Categoría `slug`, `icono` e `imagen`. Así el catálogo de la página (antes escrito a mano en `views.py`) sale de la BD.
 
 ---
 
@@ -205,6 +220,11 @@ Una **migración** es un archivo que guarda un cambio en la estructura de la BD 
 | `0001_initial.py` | Creó todas las tablas |
 | `0002_usuario_fecha_registro_activo.py` | Agregó `fecha_registro` y `activo` a Usuario |
 | `0003_indices_fechas.py` | Agregó índices a las fechas para que el admin sea rápido con 1 millón de datos |
+| `0004_catalogo_campos.py` | Creó `Marca` y agregó imagen, destacado y marca a Producto; slug, ícono e imagen a Categoría |
+| `0005_cargar_catalogo.py` | **Migración de datos**: inserta las categorías, marcas y los 23 productos reales de la tienda |
+| `0006_categoria_slug_unico.py` | Hace el slug único (se hace después de llenarlo, si no fallaría con slugs vacíos repetidos) |
+
+> **Migración de datos:** no la genera `makemigrations`, se escribe a mano con `RunPython`. Sirve para que al hacer `migrate` en una BD nueva la tienda ya tenga su catálogo.
 
 ### Comandos
 
@@ -221,9 +241,9 @@ python manage.py sqlmigrate tienda 0001   # ver el SQL que genera una migración
 
 1. Agrega un campo en `models.py`, por ejemplo en `Producto`:
    ```python
-   marca = models.CharField(max_length=50, blank=True)
+   peso_kg = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
    ```
-2. `python manage.py makemigrations` → aparece `0004_producto_marca.py`
+2. `python manage.py makemigrations` → aparece `0007_producto_peso_kg.py`
 3. `python manage.py migrate`
 4. `python manage.py showmigrations tienda` → se ve la nueva con `[X]`
 
@@ -281,7 +301,9 @@ python manage.py poblar_datos 100000 --limpiar
 python manage.py poblar_datos 1000000 --limpiar
 ```
 
-El número es la cantidad de **usuarios, productos, pedidos, detalles y pagos** (cada uno). Roles y categorías son fijos.
+El número es la cantidad de **usuarios, productos, pedidos, detalles y pagos** (cada uno). Roles, categorías y marcas son fijos.
+
+Los productos de prueba tienen SKU `SKU-...` y no tienen imagen; los reales (migración 0005) tienen SKU `SW-...`. `--limpiar` solo borra los de prueba, así la tienda no se queda sin catálogo. En la página de cada categoría se muestran primero los reales y se pagina de a 12.
 
 ### Cómo funciona
 

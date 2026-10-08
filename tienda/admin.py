@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Categoria, DetallePedido, Pago, Pedido, Producto, Rol, Usuario
+from .models import Categoria, DetallePedido, Marca, Pago, Pedido, Producto, Rol, Usuario
 
 # Personalización general del administrador
 admin.site.site_header = "Sinewave Music Pro - Administración"
@@ -35,23 +35,30 @@ class UsuarioAdmin(admin.ModelAdmin):
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ["nombre", "activa"]
+    list_display = ["nombre", "slug", "icono", "activa"]
     list_filter = ["activa"]
+    search_fields = ["nombre"]
+    prepopulated_fields = {"slug": ["nombre"]}   # el slug se escribe solo mientras escribes el nombre
+
+
+@admin.register(Marca)
+class MarcaAdmin(admin.ModelAdmin):
+    list_display = ["nombre"]
     search_fields = ["nombre"]
 
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ["codigo_sku", "nombre", "categoria", "precio", "stock", "es_caja_sorpresa"]
-    list_filter = ["categoria", "es_caja_sorpresa"]
+    list_display = ["codigo_sku", "nombre", "marca", "categoria", "precio", "stock", "destacado", "es_caja_sorpresa"]
+    list_filter = ["categoria", "marca", "destacado", "es_caja_sorpresa"]
     search_fields = ["codigo_sku", "nombre"]
-    list_editable = ["precio", "stock"]   # se editan directo desde la lista
-    list_select_related = ["categoria"]
+    list_editable = ["precio", "stock", "destacado"]   # se editan directo desde la lista
+    list_select_related = ["categoria", "marca"]
     list_per_page = 25
     # Organiza el formulario de edición en secciones
     fieldsets = [
-        ("Datos básicos", {"fields": ["codigo_sku", "nombre", "descripcion", "categoria"]}),
-        ("Precio e inventario", {"fields": ["precio", "stock", "es_caja_sorpresa"]}),
+        ("Datos básicos", {"fields": ["codigo_sku", "nombre", "descripcion", "categoria", "marca", "imagen"]}),
+        ("Precio e inventario", {"fields": ["precio", "stock", "es_caja_sorpresa", "destacado"]}),
     ]
 
 

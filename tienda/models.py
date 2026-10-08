@@ -42,11 +42,26 @@ class Usuario(models.Model):
 
 class Categoria(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
+    # El slug es el texto que va en la URL: /categoria/audio-profesional/
+    slug = models.SlugField(max_length=60, unique=True)
+    icono = models.CharField(max_length=50, blank=True, help_text="Clase de Bootstrap Icons, ej: bi-music-note")
+    imagen = models.CharField(max_length=300, blank=True, help_text="URL o ruta /static/... de la imagen")
     activa = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "categoría"
         verbose_name_plural = "categorías"
+
+    def __str__(self):
+        return self.nombre
+
+
+class Marca(models.Model):
+    nombre = models.CharField(max_length=60, unique=True)
+
+    class Meta:
+        verbose_name = "marca"
+        verbose_name_plural = "marcas"
 
     def __str__(self):
         return self.nombre
@@ -59,8 +74,14 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=0)  # pesos chilenos, sin decimales
     stock = models.PositiveIntegerField(default=0)
     es_caja_sorpresa = models.BooleanField(default=False)
+    imagen = models.CharField(max_length=300, blank=True, help_text="URL o ruta /static/... de la imagen")
+    # Los destacados son los que aparecen en "Lo más visto" de la página de inicio.
+    destacado = models.BooleanField(default=False)
     # Una categoría tiene muchos productos (1 a N).
     categoria = models.ForeignKey(Categoria, on_delete=models.PROTECT, related_name="productos")
+    # Una marca tiene muchos productos (1 a N). Es opcional (null=True) porque los productos
+    # que ya existían no tenían marca.
+    marca = models.ForeignKey(Marca, on_delete=models.PROTECT, null=True, blank=True, related_name="productos")
 
     class Meta:
         verbose_name = "producto"
