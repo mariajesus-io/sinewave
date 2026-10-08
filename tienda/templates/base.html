@@ -1,3 +1,8 @@
+{% comment %}
+  Plantilla BASE: tiene lo que se repite en todas las páginas (menú, pie de página, Bootstrap).
+  Las demás plantillas empiezan con {% extends 'base.html' %} y solo rellenan los {% block %}.
+  {% load static %} permite usar {% static 'ruta' %} para enlazar archivos de tienda/static/.
+{% endcomment %}
 {% load static %}
 <!doctype html>
 <html lang="es">
@@ -101,6 +106,7 @@
       </div>
     </nav>
     <main>
+      {# Aquí va el contenido propio de cada página #}
       {% block content %}
       {% endblock %}
     </main>
@@ -179,6 +185,9 @@
 
 
 <script>
+  // Agrega un producto al carrito. El carrito se guarda en el navegador (localStorage, clave
+  // "sinewave_cart") como una lista en JSON; no se guarda en la base de datos.
+  // Si el producto ya estaba, solo le suma 1 a la cantidad.
   function addToCart(nombre, precio, imagen, redirectUrl) {
     let rawCart = localStorage.getItem('sinewave_cart');
     let cart = [];
@@ -189,7 +198,7 @@
       cart = [];
     }
     
-    // Check if item exists
+    // ¿Ya está en el carrito?
     let existingItem = cart.find(item => item.nombre === nombre);
     if (existingItem) {
       existingItem.qty += 1;

@@ -20,6 +20,66 @@ Luego abre http://localhost:8000/admin/
 
 ---
 
+## Estructura del proyecto (qué hace cada carpeta)
+
+Un proyecto Django tiene dos niveles: el **proyecto** (`sinewave/`, la configuración general) y las **apps** (`tienda/`, donde está la lógica). Un proyecto puede tener varias apps; nosotros tenemos una.
+
+```
+sinewave/                      ← raíz del repositorio
+├── manage.py                  ← "control remoto" de Django: runserver, migrate, makemigrations, poblar_datos...
+├── requirements.txt           ← librerías a instalar (Django, Faker, Pillow para las fotos)
+├── db.sqlite3                 ← LA BASE DE DATOS (SQLite es un solo archivo)
+├── GUIA_EVALUACION.md         ← esta guía
+├── diagrama bd.drawio         ← diagrama entidad-relación de la BD
+├── diagrama flujo.drawio      ← diagrama de flujo del usuario en la tienda
+│
+├── sinewave/                  ← CONFIGURACIÓN del proyecto
+│   ├── settings.py            ← base de datos, apps instaladas, idioma, zona horaria, static y media
+│   ├── urls.py                ← URLs principales: /admin/ y todo lo demás lo manda a tienda/urls.py
+│   ├── wsgi.py / asgi.py      ← entrada para servidores de producción (no se tocaron)
+│   └── __init__.py            ← marca la carpeta como paquete de Python (vacío)
+│
+└── tienda/                    ← la APP de la tienda
+    ├── models.py              ← MODELOS = tablas de la BD (Rol, Usuario, Categoria, Marca, Producto, Pedido, DetallePedido, Pago)
+    ├── admin.py               ← cómo se ve cada modelo en el panel /admin/ (filtros, búsquedas, inlines...)
+    ├── views.py               ← VISTAS = funciones que responden a cada URL y eligen qué plantilla mostrar
+    ├── urls.py                ← une cada dirección (/carrito/, /categoria/<slug>/...) con su vista
+    ├── apps.py                ← configuración de la app (la genera Django)
+    ├── tests.py               ← para pruebas automáticas (vacío)
+    ├── migrations/            ← historial de cambios de la BD (0001 a 0007), ver sección 4
+    ├── management/commands/
+    │   └── poblar_datos.py    ← comando propio: python manage.py poblar_datos 100 (sección 6)
+    ├── templates/             ← PLANTILLAS HTML (base.html + una por página)
+    └── static/                ← archivos fijos: css/style.css e img/ (logos, fotos de productos y categorías)
+```
+
+Al ejecutar el proyecto también aparecen `media/` (las fotos que se suben desde el admin) y `.venv/` (el entorno virtual con las librerías). Ninguna de las dos se sube a GitHub (están en `.gitignore`).
+
+### Patrón MVT (Modelo – Vista – Template)
+
+Django sigue el patrón **MVT**:
+
+| Parte | Archivo | Qué hace |
+|---|---|---|
+| **M**odelo | `models.py` | Define los datos y se comunica con la BD |
+| **V**ista | `views.py` | Recibe la petición, consulta los modelos y elige la plantilla |
+| **T**emplate | `templates/*.html` | El HTML que ve el usuario, con `{{ variables }}` y `{% for %}` |
+
+### Qué pasa cuando alguien entra a `/categoria/guitarras/`
+
+1. Django revisa `sinewave/urls.py`, que lo manda a `tienda/urls.py`.
+2. `path('categoria/<str:slug>/', views.categoria)` coincide, con `slug = "guitarras"`.
+3. `views.categoria` busca la categoría en la BD (`Categoria.objects.get(slug="guitarras")`) y sus productos, de a 12 por página.
+4. Hace `render(request, 'categoria.html', {...})` con esos datos.
+5. La plantilla `categoria.html` extiende `base.html` (menú y pie de página) y dibuja una tarjeta por producto con `{% for producto in pagina %}`.
+
+### Qué está en la BD y qué no
+
+- **Sale de la BD:** categorías, productos y marcas de la página de inicio y de cada categoría. También todo lo que se ve en el admin.
+- **No usa la BD (funciona con JavaScript en el navegador, `localStorage`):** el carrito, el login, el registro y el checkout. Por eso los usuarios que se registran en la página **no** aparecen en el admin. Pasarlos a la BD sería el siguiente paso del proyecto.
+
+---
+
 ## 1. Configuración de la base de datos
 
 **Dónde:** [sinewave/settings.py](sinewave/settings.py), en la variable `DATABASES`.
@@ -79,6 +139,7 @@ Un **modelo** es una clase de Python que representa una **tabla**. Cada atributo
 | Campo Django | Tipo en la BD | Ejemplo |
 |---|---|---|
 | `CharField(max_length=...)` | VARCHAR | nombre, teléfono, imagen (URL) |
+| `ImageField` | VARCHAR con la ruta del archivo (la imagen va a `media/`) | foto del producto |
 | `SlugField` | VARCHAR, solo letras, números y guiones | slug de la categoría |
 | `TextField` | TEXT (sin límite) | descripción |
 | `EmailField` | VARCHAR, pero valida que sea un correo | correo |
@@ -161,6 +222,7 @@ erDiagram
         decimal precio
         int stock
         bool es_caja_sorpresa
+        varchar foto
         varchar imagen
         bool destacado
         int categoria_id FK
@@ -223,6 +285,7 @@ Una **migración** es un archivo que guarda un cambio en la estructura de la BD 
 | `0004_catalogo_campos.py` | Creó `Marca` y agregó imagen, destacado y marca a Producto; slug, ícono e imagen a Categoría |
 | `0005_cargar_catalogo.py` | **Migración de datos**: inserta las categorías, marcas y los 23 productos reales de la tienda |
 | `0006_categoria_slug_unico.py` | Hace el slug único (se hace después de llenarlo, si no fallaría con slugs vacíos repetidos) |
+| `0007_producto_foto.py` | Agregó `foto` (ImageField) para subir fotos desde el admin; se guardan en `media/productos/` |
 
 > **Migración de datos:** no la genera `makemigrations`, se escribe a mano con `RunPython`. Sirve para que al hacer `migrate` en una BD nueva la tienda ya tenga su catálogo.
 
@@ -243,7 +306,7 @@ python manage.py sqlmigrate tienda 0001   # ver el SQL que genera una migración
    ```python
    peso_kg = models.DecimalField(max_digits=5, decimal_places=1, null=True, blank=True)
    ```
-2. `python manage.py makemigrations` → aparece `0007_producto_peso_kg.py`
+2. `python manage.py makemigrations` → aparece `0008_producto_peso_kg.py`
 3. `python manage.py migrate`
 4. `python manage.py showmigrations tienda` → se ve la nueva con `[X]`
 
@@ -338,13 +401,221 @@ Con `--limpiar` y un millón de datos ya cargados, el borrado suma ~40 s.
 
 ---
 
-## Preguntas típicas del profe (respuestas cortas)
+## Preguntas para la defensa (respuestas cortas)
 
-- **¿Qué es el ORM?** Permite trabajar con la BD usando clases de Python en vez de escribir SQL.
-- **¿Qué es una migración?** Un archivo que registra un cambio en la estructura de la BD, para aplicarlo y tener historial.
-- **¿Dónde se configura la BD?** En `settings.py`, en `DATABASES`.
-- **¿Qué pasa si borro un pedido?** Se borran sus detalles y pagos (`CASCADE`).
-- **¿Y si borro una categoría con productos?** No deja (`PROTECT`).
-- **¿Por qué es rápida la carga masiva?** `bulk_create` por lotes, en vez de un INSERT por fila.
-- **¿Por qué el admin no se cae con 1 millón?** Paginación (25 por página), `autocomplete_fields`, `list_select_related` e índices en las fechas.
-- **¿Para qué sirve `__str__`?** Define cómo se muestra el objeto como texto (en el admin y en los desplegables).
+Ordenadas por tema. Si te preguntan "¿dónde está?", abre el archivo indicado y muestra la línea.
+
+### Django en general
+
+**¿Qué es Django?**
+Un framework de Python para hacer aplicaciones web. Trae ORM, panel de administración, sistema de URLs y plantillas.
+
+**¿Qué es el patrón MVT?**
+Modelo (`models.py`, los datos), Vista (`views.py`, la lógica) y Template (`templates/`, el HTML). La vista consulta el modelo y le pasa los datos a la plantilla.
+
+**¿Diferencia entre proyecto y app?**
+El proyecto (`sinewave/`) es la configuración general. La app (`tienda/`) es un módulo con funcionalidad propia. Un proyecto puede tener varias apps.
+
+**¿Para qué sirve `manage.py`?**
+Para ejecutar comandos de Django: `runserver`, `makemigrations`, `migrate`, `createsuperuser` y nuestro `poblar_datos`.
+
+**¿Qué hay en `settings.py`?**
+La base de datos (`DATABASES`), las apps instaladas (`INSTALLED_APPS`), el idioma (`es-cl`), la zona horaria (`America/Santiago`), los archivos estáticos y los media.
+
+**¿Por qué tu app se llama `tienda` y no `core`?**
+El nombre es libre. Lo importante es que esté en `INSTALLED_APPS`.
+
+**¿Qué es `requirements.txt`?**
+La lista de librerías con su versión. Se instalan con `pip install -r requirements.txt`, dentro del entorno virtual `.venv`.
+
+### URLs y vistas
+
+**¿Qué pasa cuando entro a `/categoria/guitarras/`?**
+`sinewave/urls.py` la deriva con `include` a `tienda/urls.py`. Ahí la ruta `categoria/<str:slug>/` llama a `views.categoria` con `slug="guitarras"`. La vista busca la categoría y sus productos en la BD y hace `render` de `categoria.html`.
+
+**¿Qué hace `include('tienda.urls')`?**
+Deriva las URLs al archivo de la app, para no tener todas las rutas en un solo lugar.
+
+**¿Para qué sirve `name=` en `path()`?**
+Para enlazar la ruta en las plantillas con `{% url 'carrito' %}`. Si la dirección cambia, los enlaces no se rompen.
+
+**¿Qué es `request`?**
+Un objeto con toda la información de la petición: método (GET/POST), parámetros (`request.GET`), usuario, cookies.
+
+**¿Qué hace `render`?**
+Junta una plantilla HTML con un diccionario de datos (el contexto) y devuelve la página lista.
+
+**¿Qué hace `get_object_or_404`?**
+Busca un registro. Si no existe, muestra el error 404 en vez de que la página se caiga. Pruébalo con `/categoria/no-existe/`.
+
+**¿Para qué es el `Paginator`?**
+Para mostrar 12 productos por página. Con un millón de productos de prueba no se pueden cargar todos. La página se elige con `?page=2`.
+
+**¿Qué es `select_related`?**
+Trae la tabla relacionada (marca, categoría) en la misma consulta, con un JOIN. Sin eso, Django haría una consulta extra por cada producto (el problema "N+1").
+
+**¿Qué es un slug?**
+Un texto apto para URL, sin espacios ni tildes: `audio-profesional`. Se usa en vez del `id` para que la dirección sea legible.
+
+### Plantillas (templates)
+
+**¿Qué hace `{% extends 'base.html' %}`?**
+Hereda la plantilla base (menú, pie de página, Bootstrap). La página hija solo rellena los `{% block %}`.
+
+**¿Diferencia entre `{{ }}` y `{% %}`?**
+`{{ variable }}` muestra un valor. `{% for %}`, `{% if %}` y `{% url %}` son instrucciones (etiquetas).
+
+**¿Qué hace `{% static %}`?**
+Arma la ruta a un archivo de `tienda/static/`, como CSS o imágenes.
+
+**¿Qué hace `{% empty %}` dentro del `for`?**
+Muestra un mensaje si la lista viene vacía ("No hay productos en esta categoría").
+
+**¿Qué es `|escapejs`?**
+Un filtro que protege el texto al meterlo dentro de JavaScript. Así un nombre con comillas no rompe el código.
+
+**¿Dónde están los estilos?**
+En Bootstrap 5, cargado desde un CDN en `base.html`, y en `tienda/static/css/style.css`.
+
+### Modelos y base de datos
+
+**¿Qué base de datos usan?**
+SQLite. Es el archivo `db.sqlite3` y no necesita servidor. Para cambiar a PostgreSQL basta con modificar `DATABASES` en `settings.py`; hay un ejemplo comentado.
+
+**¿Qué es el ORM?**
+Trabajar la BD con clases de Python en vez de SQL. Por ejemplo, `Producto.objects.filter(destacado=True)` equivale a `SELECT ... WHERE destacado = 1`.
+
+**¿Por qué los modelos no tienen `id`?**
+Django lo crea automáticamente como clave primaria autoincremental.
+
+**¿Cómo se hace una relación?**
+Con `ForeignKey` en el lado "muchos". Por ejemplo, `Producto` tiene `categoria = ForeignKey(Categoria)`, y en la tabla se guarda como `categoria_id`.
+
+**¿Qué es `on_delete`? ¿Por qué `PROTECT` en unos y `CASCADE` en otros?**
+Define qué pasa al borrar el padre.
+- `CASCADE` borra los hijos. Si se borra un pedido, se borran sus detalles y pagos, que no tienen sentido solos.
+- `PROTECT` impide borrar. No se puede borrar una categoría que tiene productos ni un producto que ya se vendió.
+
+**¿Diferencia entre `null=True` y `blank=True`?**
+- `null` es para la BD: la columna acepta NULL.
+- `blank` es para los formularios: el campo puede quedar vacío.
+- `marca` tiene los dos porque es opcional.
+
+**¿Qué es `related_name`?**
+El nombre para ir del padre a los hijos: `categoria.productos.all()`.
+
+**¿Para qué es `__str__`?**
+Define cómo se muestra el objeto como texto, por ejemplo en el admin y en las listas desplegables.
+
+**¿Qué es `class Meta`?**
+Opciones del modelo: nombre en singular y plural para el admin (`verbose_name`) y orden por defecto (`ordering`).
+
+**¿Qué son los `choices`?**
+Valores fijos permitidos, como el estado del pedido (pendiente, pagado, enviado…). En el admin aparecen como lista desplegable.
+
+**¿Por qué `DecimalField` y no `FloatField` para el precio?**
+`Float` tiene errores de redondeo. El dinero se guarda exacto con `Decimal`, y `decimal_places=0` porque son pesos chilenos.
+
+**¿Por qué `DetallePedido` guarda `precio_unitario` si el producto ya tiene precio?**
+Porque el precio del producto puede cambiar, y el pedido debe recordar cuánto se pagó en ese momento.
+
+**¿Cómo se calcula el subtotal?**
+Automáticamente, en `DetallePedido.save()`: `cantidad * precio_unitario`. Así nunca queda mal.
+
+**¿Cómo funciona la foto del producto?**
+`foto` es un `ImageField` (necesita la librería Pillow). La imagen subida se guarda en `media/productos/` y en la BD queda solo la ruta. La propiedad `url_imagen` devuelve la foto si existe; si no, devuelve el campo `imagen` (una URL).
+
+**¿Por qué `Usuario` no tiene contraseña?**
+Guardarla en texto plano es inseguro. El admin usa el sistema de usuarios de Django (`django.contrib.auth`), que guarda las contraseñas encriptadas. Nuestro `Usuario` representa a los clientes.
+
+### Migraciones
+
+**¿Qué es una migración?**
+Un archivo que registra un cambio en la estructura de la BD. Funciona como un historial de versiones.
+
+**¿Diferencia entre `makemigrations` y `migrate`?**
+`makemigrations` crea el archivo leyendo `models.py`. `migrate` aplica los cambios a la BD.
+
+**¿Cómo veo cuáles están aplicadas?**
+Con `python manage.py showmigrations`: `[X]` significa aplicada.
+
+**¿Qué es la migración 0005?**
+Una migración de datos, escrita a mano con `RunPython`. Inserta el catálogo real (23 productos, 10 categorías, 20 marcas), así una BD nueva ya tiene productos.
+
+**¿Por qué en las migraciones se usa `apps.get_model` y no `from tienda.models import`?**
+Porque la migración debe usar el modelo tal como era en ese punto del historial, no como es hoy.
+
+**¿Por qué el slug se hizo único en una migración aparte (0006)?**
+Primero se agregó vacío (0004), después se llenó (0005) y al final se hizo único (0006). Si se hacía único de inmediato, fallaba porque todas las categorías tenían el mismo slug vacío.
+
+### Admin
+
+**¿Cómo entro al admin?**
+Creo un usuario con `python manage.py createsuperuser` y entro a `/admin/`.
+
+**¿Cómo se registra un modelo?**
+Con `@admin.register(Modelo)` sobre una clase `ModelAdmin`, en `admin.py`.
+
+**¿Qué personalizaciones hiciste?**
+- `list_display`: columnas.
+- `list_filter`: filtros.
+- `search_fields`: buscador.
+- `list_editable`: editar desde la lista.
+- `fieldsets`: secciones del formulario.
+- `inlines`: detalles y pagos dentro del pedido.
+- `autocomplete_fields`, `date_hierarchy` y acciones propias.
+
+**¿Qué es un inline?**
+Muestra los registros hijos dentro del formulario del padre. Por ejemplo, los detalles y pagos dentro del pedido.
+
+**¿Cómo se calcula el total del pedido?**
+En `PedidoAdmin.save_related`: después de guardar los detalles, suma sus subtotales.
+
+**¿Por qué `autocomplete_fields`?**
+Con un millón de usuarios, una lista desplegable normal cargaría todos y la página se caería. El autocompletado busca solo lo que escribes.
+
+**¿Qué es una acción (`actions`)?**
+Una operación sobre varios registros seleccionados, como "Marcar como enviado" o "Activar usuarios". Usa `queryset.update(...)`, que es una sola consulta.
+
+**¿Por qué `format_html` en la miniatura de la foto?**
+Para insertar HTML de forma segura. Escapa los valores y evita la inyección de código (XSS).
+
+**¿Qué hace `prepopulated_fields`?**
+Escribe el slug automáticamente mientras escribes el nombre de la categoría.
+
+### Datos de prueba (Faker)
+
+**¿Cómo generaste los datos?**
+Con un comando propio en `tienda/management/commands/poblar_datos.py`, usando la librería Faker con datos chilenos (`es_CL`). Se ejecuta con `python manage.py poblar_datos 1000`.
+
+**¿Cómo lo hiciste rápido con un millón de registros?**
+- `bulk_create` inserta de a 5.000 filas por consulta, en vez de una por una.
+- Los objetos se crean por lotes para no llenar la memoria.
+- `transaction.atomic()` guarda cada lote de una vez.
+
+**¿Por qué el subtotal se calcula a mano en el comando?**
+Porque `bulk_create` no llama a `save()`.
+
+**¿Cómo evitas correos y SKU repetidos?**
+Se les agrega un número correlativo que parte desde el último `id` de la BD.
+
+**¿Qué hace `--limpiar`? ¿Borra los productos reales?**
+Borra los datos de prueba con un DELETE directo (`_raw_delete`, rápido con millones de filas). Los productos reales tienen SKU `SW-...` y no se borran; solo se borran los `SKU-...`.
+
+### Carrito, login y limitaciones
+
+**¿Dónde se guarda el carrito?**
+En el navegador, con `localStorage` (función `addToCart` en `base.html`). No está en la BD.
+
+**¿El login y el registro funcionan de verdad?**
+Son solo de interfaz: validan el formulario y guardan en `localStorage`. Por eso esos usuarios no aparecen en el admin. El siguiente paso sería usar `django.contrib.auth` y guardar los pedidos en las tablas `Pedido` y `DetallePedido`.
+
+**¿Qué mejorarías?**
+- Login real con Django.
+- Guardar carrito y pedidos en la BD.
+- Usar los filtros de precio de la página de categoría (hoy son solo visuales).
+- Escribir pruebas en `tests.py`.
+- En producción: `DEBUG = False` y `SECRET_KEY` fuera del código.
+
+**¿Usaste inteligencia artificial?**
+Responde con la verdad. El README menciona un agente y los commits dicen "Co-Authored-By: Claude". Lo que importa es poder explicar cada parte, y para eso está esta guía.

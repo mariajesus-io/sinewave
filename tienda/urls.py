@@ -1,3 +1,5 @@
+# URLs de la app "tienda". Cada path() une una dirección del navegador con una función de views.py.
+# El "name" permite usar {% url 'nombre' %} en las plantillas sin escribir la dirección a mano.
 from django.urls import path
 from . import views
 

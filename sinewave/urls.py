@@ -14,17 +14,16 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
-from django.urls import path
-from tienda import views
-from django.urls import path, include
+# URLs PRINCIPALES del proyecto: es lo primero que revisa Django cuando llega una petición.
+# Las rutas de la tienda están en tienda/urls.py y se "incluyen" aquí.
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.inicio, name='inicio'),
-    path('', include('tienda.urls')),
+    path('admin/', admin.site.urls),        # panel de administración de Django
+    path('', include('tienda.urls')),       # todas las páginas de la tienda
 ]
 
 # En desarrollo, Django sirve las fotos subidas en /media/

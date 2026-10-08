@@ -20,9 +20,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Clave para firmar sesiones y cookies. En un proyecto real no se sube a GitHub.
 SECRET_KEY = 'django-insecure-5a23)7fnu5pbh-!x*2pabgkbl77@j&u4z24ni%3-z1w41*=3kx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = True muestra los errores detallados en el navegador. Solo para desarrollo.
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -30,6 +32,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+# Apps activas. Las de django.contrib vienen con Django (admin, usuarios, sesiones...);
+# 'tienda' es la nuestra. Si una app no está aquí, Django no ve sus modelos ni sus plantillas.
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
     'tienda'
 ]
 
+# Capas que procesan cada petición antes de llegar a la vista (seguridad, sesiones, CSRF, login...).
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,13 +55,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Archivo donde empiezan las URLs.
 ROOT_URLCONF = 'sinewave.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'APP_DIRS': True,
+        'APP_DIRS': True,   # busca las plantillas en la carpeta templates/ de cada app
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
@@ -97,6 +103,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
+# Reglas de contraseña para los usuarios del admin (largo mínimo, no muy común, etc.).
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -128,11 +135,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
+# Archivos estáticos: CSS, imágenes y JS que vienen con el proyecto.
+# Django los busca solo en la carpeta static/ de cada app (tienda/static/), por eso no hace
+# falta STATICFILES_DIRS. En las plantillas se enlazan con {% static 'css/style.css' %}.
 STATIC_URL = 'static/'
-import os
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "tienda/static"),
-]
 
 # Archivos que se suben desde el admin (fotos de productos)
 MEDIA_URL = 'media/'
