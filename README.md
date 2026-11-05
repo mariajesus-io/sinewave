@@ -68,6 +68,19 @@ el ORM de Django, sin `forms.py`. Todos tienen CSRF; la eliminación y el cierre
 de sesión requieren POST.
 Un usuario sin sesión vuelve a `/login/` al entrar a cualquier ruta protegida.
 
+## Pedidos desde la tienda
+
+El carrito permanece en el navegador hasta confirmar. Al enviar `/checkout/`,
+Django exige una cuenta con perfil de cliente activo, comprueba productos y stock
+en MySQL y calcula el precio y el despacho desde la base de datos. Guarda el
+pedido, sus detalles y un pago pendiente en una transacción, y descuenta el
+stock. Un identificador único evita pedidos duplicados al repetir el envío.
+`/historial/` muestra únicamente los pedidos de la cuenta autenticada.
+No hay pasarela de pago conectada: el pedido se registra pendiente y el pago
+debe confirmarse después desde el panel.
+Al cancelar o eliminar un pedido creado por el checkout, el panel devuelve sus
+unidades al stock; también ajusta la reserva al modificar sus detalles.
+
 ## Verificar
 
 ```bash

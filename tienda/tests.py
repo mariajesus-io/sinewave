@@ -1,3 +1,4 @@
+import json
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -186,3 +187,151 @@ class PanelTests(TestCase):
         self.assertEqual(pago.estado, 'aprobado')
         self.client.post(reverse('panel_hijo_eliminar', args=[pedido.pk, 'pagos', pago.pk]))
         self.assertFalse(Pago.objects.filter(pk=pago.pk).exists())
+
+
+class CheckoutTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.cuenta = get_user_model().objects.create_user(
+            'compradora', 'compradora@example.com', 'ClaveSegura123!',
+        )
+        cls.otra_cuenta = get_user_model().objects.create_user(
+            'otra', 'otra@example.com', 'ClaveSegura123!',
+        )
+        rol = Rol.objects.create(nombre='Cliente')
+        cls.cliente = Usuario.objects.create(
+            nombre_completo='Compradora', correo='compradora@example.com',
+            rol=rol, cuenta=cls.cuenta,
+        )
+        cls.otra_cliente = Usuario.objects.create(
+            nombre_completo='Otra', correo='otra@example.com',
+            rol=rol, cuenta=cls.otra_cuenta,
+        )
+        categoria = Categoria.objects.create(nombre='Audio', slug='audio')
+        cls.producto = Producto.objects.create(
+            codigo_sku='A-1', nombre='Micrófono', precio=10000,
+            stock=3, categoria=categoria, es_caja_sorpresa=True,
+        )
+
+    def datos_compra(self, token, **cambios):
+        datos = {
+            'checkout_token': token,
+            'carrito': json.dumps([{'id': self.producto.pk, 'qty': 2, 'precio': 1}]),
+            'despacho': 'despacho',
+            'direccion': 'Av. Providencia 1234',
+            'pago': 'transferencia',
+        }
+        datos.update(cambios)
+        return datos
+
+    def test_checkout_persiste_precio_real_stock_entrega_y_pago_pendiente(self):
+        self.client.force_login(self.cuenta)
+        token = self.client.get(reverse('checkout')).context['checkout_token']
+        datos = self.datos_compra(token)
+        respuesta = self.client.post(reverse('checkout'), datos)
+        pedido = Pedido.objects.get(usuario=self.cliente)
+        self.assertRedirects(respuesta, reverse('pedido_confirmado', args=[pedido.pk]),
+                             fetch_redirect_response=False)
+        self.assertEqual(pedido.total, Decimal('25000'))
+        self.assertEqual(pedido.costo_envio, Decimal('5000'))
+        self.assertEqual(pedido.direccion_entrega, 'Av. Providencia 1234')
+        self.assertEqual(pedido.estado, Pedido.Estado.PENDIENTE)
+        detalle = DetallePedido.objects.get(pedido=pedido)
+        self.assertEqual(detalle.precio_unitario, Decimal('10000'))
+        self.assertEqual(detalle.subtotal, Decimal('20000'))
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 1)
+        self.assertEqual(Pago.objects.get(pedido=pedido).estado, Pago.Estado.PENDIENTE)
+        self.assertContains(self.client.get(reverse('pedido_confirmado', args=[pedido.pk])),
+                            "localStorage.removeItem('sinewave_cart')")
+        self.assertNotContains(self.client.get(reverse('pedido_confirmado', args=[pedido.pk])),
+                               "localStorage.removeItem('sinewave_cart')")
+
+        historial = self.client.get(reverse('historial'))
+        self.assertContains(historial, 'Micrófono')
+        self.assertContains(historial, '#%s' % pedido.pk)
+        self.assertNotContains(historial, '#SW-10294')
+        self.assertRedirects(self.client.post(reverse('checkout'), datos),
+                             reverse('pedido_confirmado', args=[pedido.pk]))
+        self.assertEqual(Pedido.objects.filter(usuario=self.cliente).count(), 1)
+
+    def test_checkout_rechaza_stock_y_datos_invalidos_sin_escribir(self):
+        self.client.force_login(self.cuenta)
+        token = self.client.get(reverse('checkout')).context['checkout_token']
+        respuesta = self.client.post(reverse('checkout'), self.datos_compra(
+            token, carrito=json.dumps([{'id': self.producto.pk, 'qty': 4}]),
+        ))
+        self.assertContains(respuesta, 'Stock insuficiente')
+        respuesta = self.client.post(reverse('checkout'), self.datos_compra(
+            token, direccion='',
+        ))
+        self.assertContains(respuesta, 'Indica la dirección')
+        respuesta = self.client.post(reverse('checkout'), self.datos_compra(
+            token, carrito=json.dumps([{'id': self.producto.pk, 'qty': 1.5}]),
+        ))
+        self.assertContains(respuesta, 'carrito no es válido')
+        self.assertEqual(Pedido.objects.count(), 0)
+        self.assertEqual(Pago.objects.count(), 0)
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 3)
+
+    def test_historial_y_confirmacion_solo_muestran_pedidos_propios(self):
+        pedido = Pedido.objects.create(usuario=self.otra_cliente, total=10000)
+        self.assertRedirects(self.client.get(reverse('historial')),
+                             reverse('login') + '?next=' + reverse('historial'))
+        self.assertRedirects(self.client.get(reverse('checkout')),
+                             reverse('login') + '?next=' + reverse('checkout'))
+        self.client.force_login(self.cuenta)
+        self.assertEqual(self.client.get(reverse('pedido_confirmado', args=[pedido.pk])).status_code, 404)
+        self.assertEqual(self.client.get(reverse('historial')).context['pagina'].paginator.count, 0)
+
+    def test_retiro_guarda_total_sin_envio(self):
+        self.client.force_login(self.cuenta)
+        token = self.client.get(reverse('checkout')).context['checkout_token']
+        respuesta = self.client.post(reverse('checkout'), self.datos_compra(
+            token, despacho='retiro', direccion='Dirección descartada',
+            carrito=json.dumps([{'id': self.producto.pk, 'qty': 1}]),
+        ))
+        self.assertEqual(respuesta.status_code, 302)
+        pedido = Pedido.objects.get(usuario=self.cliente)
+        self.assertEqual(pedido.total, Decimal('10000'))
+        self.assertEqual(pedido.costo_envio, Decimal('0'))
+        self.assertEqual(pedido.direccion_entrega, '')
+
+    def test_catalogo_envia_identificador_real_al_carrito(self):
+        for url in (reverse('categoria', args=['audio']), reverse('cajas_sorpresa')):
+            respuesta = self.client.get(url)
+            self.assertEqual(respuesta.status_code, 200)
+            self.assertContains(respuesta, 'addToCart(%s,' % self.producto.pk)
+
+    def test_panel_ajusta_stock_de_pedido_publico_al_cancelar_editar_y_eliminar(self):
+        self.client.force_login(self.cuenta)
+        token = self.client.get(reverse('checkout')).context['checkout_token']
+        self.client.post(reverse('checkout'), self.datos_compra(token))
+        pedido = Pedido.objects.get(usuario=self.cliente)
+        detalle = DetallePedido.objects.get(pedido=pedido)
+        admin = get_user_model().objects.create_superuser(
+            'admin_checkout', 'admin_checkout@example.com', 'ClaveSegura123!',
+        )
+        self.client.force_login(admin)
+        self.client.post(reverse('panel_formulario_editar', args=['pedidos', pedido.pk]), {
+            'usuario': self.cliente.pk, 'estado': Pedido.Estado.CANCELADO,
+        })
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 3)
+        self.client.post(reverse('panel_formulario_editar', args=['pedidos', pedido.pk]), {
+            'usuario': self.cliente.pk, 'estado': Pedido.Estado.PENDIENTE,
+        })
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 1)
+        self.client.post(reverse('panel_hijo_editar', args=[pedido.pk, 'detalles', detalle.pk]), {
+            'producto': self.producto.pk, 'cantidad': 1, 'precio_unitario': 10000,
+        })
+        self.producto.refresh_from_db()
+        pedido.refresh_from_db()
+        self.assertEqual(self.producto.stock, 2)
+        self.assertEqual(pedido.total, Decimal('15000'))
+        self.client.post(reverse('panel_eliminar', args=['pedidos', pedido.pk]))
+        self.producto.refresh_from_db()
+        self.assertEqual(self.producto.stock, 3)
+        self.assertFalse(Pedido.objects.filter(pk=pedido.pk).exists())

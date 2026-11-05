@@ -192,9 +192,9 @@
 
 <script>
   // Agrega un producto al carrito. El carrito se guarda en el navegador (localStorage, clave
-  // "sinewave_cart") como una lista en JSON; no se guarda en la base de datos.
+  // "sinewave_cart") como una lista en JSON hasta confirmar el pedido.
   // Si el producto ya estaba, solo le suma 1 a la cantidad.
-  function addToCart(nombre, precio, imagen, redirectUrl) {
+  function addToCart(id, nombre, precio, imagen, redirectUrl) {
     let rawCart = localStorage.getItem('sinewave_cart');
     let cart = [];
     try {
@@ -205,11 +205,12 @@
     }
     
     // ¿Ya está en el carrito?
-    let existingItem = cart.find(item => item.nombre === nombre);
+    let existingItem = cart.find(item => item.id === id);
     if (existingItem) {
       existingItem.qty += 1;
     } else {
       cart.push({
+        id: id,
         nombre: nombre,
         precio: precio,
         imagen: imagen,

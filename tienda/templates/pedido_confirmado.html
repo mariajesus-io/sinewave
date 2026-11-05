@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Pedido registrado - Sinewave{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center">
+  <div class="row justify-content-center">
+    <div class="col-md-7">
+      <div class="card bg-dark text-light border-success">
+        <div class="card-body py-5">
+          <i class="bi bi-check-circle text-success mb-3" style="font-size: 4rem;"></i>
+          <h2 class="mb-3">Pedido #{{ pedido.pk }} registrado</h2>
+          <p class="text-muted">Tu pedido quedó guardado. El pago está pendiente de confirmación.</p>
+          <p class="mb-1">Total: <strong>$ {{ pedido.total|floatformat:0 }}</strong></p>
+          <p class="mb-4">Entrega: {{ pedido.get_tipo_entrega_display }}{% if pedido.direccion_entrega %} · {{ pedido.direccion_entrega }}{% endif %}</p>
+          <a href="{% url 'historial' %}" class="btn btn-primary px-4">Ver mis pedidos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{% if clear_cart %}
+<script>
+  localStorage.removeItem('sinewave_cart');
+</script>
+{% endif %}
+{% endblock %}

@@ -113,9 +113,17 @@ class Pedido(models.Model):
         ENTREGADO = "entregado", "Entregado"
         CANCELADO = "cancelado", "Cancelado"
 
+    class Entrega(models.TextChoices):
+        DESPACHO = "despacho", "Despacho a domicilio"
+        RETIRO = "retiro", "Retiro en tienda"
+
     fecha_creacion = models.DateTimeField(default=timezone.now, db_index=True)
     estado = models.CharField(max_length=20, choices=Estado.choices, default=Estado.PENDIENTE)
     total = models.DecimalField(max_digits=12, decimal_places=0, default=0)
+    tipo_entrega = models.CharField(max_length=20, choices=Entrega.choices, default=Entrega.RETIRO)
+    direccion_entrega = models.CharField(max_length=255, blank=True)
+    costo_envio = models.DecimalField(max_digits=10, decimal_places=0, default=0)
+    checkout_token = models.CharField(max_length=64, unique=True, null=True, blank=True)
     # Un usuario tiene muchos pedidos (1 a N). CASCADE: si se borra el usuario, se borran sus pedidos.
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="pedidos")
 

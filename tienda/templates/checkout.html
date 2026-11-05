@@ -1,148 +1,131 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Checkout - Sinewave{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-  <h2 class="text-center mb-4 text-light">Checkout</h2>
-  
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card bg-dark text-light border-secondary mb-4 shadow-sm">
-        <div class="card-header border-secondary">
-          <h5 class="mb-0">1. Opciones de Despacho y Entrega</h5>
+  <h2 class="text-center mb-4 text-light">Confirmar pedido</h2>
+  {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+  <div id="checkout-error" class="alert alert-danger d-none" role="alert"></div>
+  <form method="post" id="checkout-form">
+    {% csrf_token %}
+    <input type="hidden" name="checkout_token" value="{{ checkout_token }}">
+    <input type="hidden" name="carrito" id="carrito-data">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card bg-dark text-light border-secondary mb-4 shadow-sm">
+          <div class="card-header border-secondary"><h5 class="mb-0">1. Entrega</h5></div>
+          <div class="card-body">
+            <div class="form-check mb-2">
+              <input class="form-check-input bg-dark border-secondary" type="radio" name="despacho" id="despacho1" value="despacho" {% if datos.despacho != 'retiro' %}checked{% endif %}>
+              <label class="form-check-label" for="despacho1">Despacho a domicilio - $5.000 (gratis desde $100.000)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input bg-dark border-secondary" type="radio" name="despacho" id="despacho2" value="retiro" {% if datos.despacho == 'retiro' %}checked{% endif %}>
+              <label class="form-check-label" for="despacho2">Retiro en tienda - gratis</label>
+            </div>
+            <hr class="border-secondary">
+            <div class="mb-3">
+              <label class="form-label" for="direccion">Dirección de envío</label>
+              <input id="direccion" name="direccion" type="text" maxlength="255" class="form-control bg-dark text-light border-secondary" placeholder="Ej. Av. Providencia 1234" value="{{ datos.direccion|default:'' }}">
+            </div>
+          </div>
         </div>
-        <div class="card-body">
-          <div class="form-check mb-2">
-            <input class="form-check-input bg-dark border-secondary" type="radio" name="despacho" id="despacho1" checked>
-            <label class="form-check-label" for="despacho1">
-              Despacho a Domicilio (Starken / Chilexpress) - $5.000
-            </label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input bg-dark border-secondary" type="radio" name="despacho" id="despacho2">
-            <label class="form-check-label" for="despacho2">
-              Retiro en Tienda (Providencia) - Gratis
-            </label>
-          </div>
-          <hr class="border-secondary">
-          <div class="mb-3">
-            <label class="form-label">Dirección de Envío</label>
-            <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Ej. Av. Providencia 1234" required>
-          </div>
-        </div>
-      </div>
-
-      <div class="card bg-dark text-light border-secondary shadow-sm">
-        <div class="card-header border-secondary">
-          <h5 class="mb-0">2. Opciones de Pago</h5>
-        </div>
-        <div class="card-body">
-          <div class="form-check mb-2">
-            <input class="form-check-input bg-dark border-secondary" type="radio" name="pago" id="pago1" checked>
-            <label class="form-check-label" for="pago1">
-              Tarjeta de Crédito / Débito (Webpay)
-            </label>
-          </div>
-          <div class="form-check mb-2">
-            <input class="form-check-input bg-dark border-secondary" type="radio" name="pago" id="pago2">
-            <label class="form-check-label" for="pago2">
-              Transferencia Bancaria
-            </label>
+        <div class="card bg-dark text-light border-secondary shadow-sm">
+          <div class="card-header border-secondary"><h5 class="mb-0">2. Método de pago preferido</h5></div>
+          <div class="card-body">
+            <p class="text-warning small">El pedido y el pago quedarán pendientes. Esta página no cobra tarjetas.</p>
+            <div class="form-check mb-2">
+              <input class="form-check-input bg-dark border-secondary" type="radio" name="pago" id="pago-transferencia" value="transferencia" {% if datos.pago != 'debito' and datos.pago != 'credito' %}checked{% endif %}>
+              <label class="form-check-label" for="pago-transferencia">Transferencia bancaria</label>
+            </div>
+            <div class="form-check mb-2">
+              <input class="form-check-input bg-dark border-secondary" type="radio" name="pago" id="pago-debito" value="debito" {% if datos.pago == 'debito' %}checked{% endif %}>
+              <label class="form-check-label" for="pago-debito">Débito (coordinar pago)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input bg-dark border-secondary" type="radio" name="pago" id="pago-credito" value="credito" {% if datos.pago == 'credito' %}checked{% endif %}>
+              <label class="form-check-label" for="pago-credito">Crédito (coordinar pago)</label>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    
-    <div class="col-md-4">
-      <div class="card bg-dark text-light border-secondary position-sticky shadow-sm" style="top: 20px;">
-        <div class="card-header border-secondary">
-          <h5 class="mb-0">Resumen</h5>
-        </div>
-        <div class="card-body">
-          <div id="checkout-items-list" class="mb-3 small">
-            <!-- items via JS -->
+      <div class="col-md-4">
+        <div class="card bg-dark text-light border-secondary position-sticky shadow-sm" style="top: 20px;">
+          <div class="card-header border-secondary"><h5 class="mb-0">Resumen</h5></div>
+          <div class="card-body">
+            <div id="checkout-items-list" class="mb-3 small"></div>
+            <hr class="border-secondary">
+            <div class="d-flex justify-content-between mb-2"><span>Subtotal estimado</span><span id="checkout-subtotal">$0</span></div>
+            <div class="d-flex justify-content-between mb-3 text-success"><span>Envío</span><span id="checkout-envio">$5.000</span></div>
+            <hr class="border-secondary">
+            <div class="d-flex justify-content-between mb-4"><strong class="fs-5">Total estimado</strong><strong class="fs-5" style="color: var(--accent);" id="checkout-total">$0</strong></div>
+            <p class="text-muted small">El servidor verificará precios y disponibilidad antes de guardar el pedido.</p>
+            <button type="submit" id="confirmar-pedido" class="btn btn-success w-100 mb-2 fw-bold shadow">Registrar pedido</button>
           </div>
-          <hr class="border-secondary">
-          <div class="d-flex justify-content-between mb-2">
-            <span>Subtotal</span>
-            <span id="checkout-subtotal">$0</span>
-          </div>
-          <div class="d-flex justify-content-between mb-3 text-success">
-            <span id="checkout-envio-label">Envío</span>
-            <span id="checkout-envio">$5.000</span>
-          </div>
-          <hr class="border-secondary">
-          <div class="d-flex justify-content-between mb-4">
-            <strong class="fs-5">Total</strong>
-            <strong class="fs-5" style="color: var(--accent);" id="checkout-total">$0</strong>
-          </div>
-          
-          <a href="{% url 'pago_exitoso' %}" class="btn btn-success w-100 mb-2 fw-bold shadow">Confirmar y Realizar Pago</a>
-          <button class="btn btn-outline-danger w-100 mt-2" onclick="alert('Pago rechazado por el banco. Intente nuevamente.')">Simular Pago Fallido</button>
         </div>
       </div>
     </div>
-  </div>
+  </form>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    let rawCart = localStorage.getItem('sinewave_cart');
-    let cart = [];
-    try {
-      cart = JSON.parse(rawCart) || [];
-      if (!Array.isArray(cart)) cart = [];
-    } catch (e) {
-      cart = [];
-    }
-    
-    if (cart.length === 0) {
-      window.location.href = "{% url 'carrito' %}";
-      return;
-    }
-
-    const itemsList = document.getElementById('checkout-items-list');
-    const subtotalDisplay = document.getElementById('checkout-subtotal');
-    const totalDisplay = document.getElementById('checkout-total');
-    const envioDisplay = document.getElementById('checkout-envio');
-    
-    const radioEnvio = document.getElementById('despacho1');
-    const radioRetiro = document.getElementById('despacho2');
-
-    function formatMoney(amount) {
-      return '$' + amount.toLocaleString('es-CL');
-    }
-
-    let subtotal = 0;
-    cart.forEach(item => {
-      subtotal += (item.precio * item.qty);
-      let div = document.createElement('div');
-      div.className = 'd-flex justify-content-between text-muted mb-1';
-      div.innerHTML = `<span>${item.qty}x ${item.nombre}</span><span>${formatMoney(item.precio * item.qty)}</span>`;
-      itemsList.appendChild(div);
-    });
-
-    function updateTotal() {
-      let envio = radioEnvio.checked ? 5000 : 0;
-      // Envíos gratis por más de 100.000
-      if (subtotal >= 100000 && radioEnvio.checked) {
-        envio = 0;
-        envioDisplay.innerHTML = '<span class="badge bg-success">Gratis</span>';
-      } else {
-        envioDisplay.textContent = formatMoney(envio);
-      }
-      subtotalDisplay.textContent = formatMoney(subtotal);
-      totalDisplay.textContent = formatMoney(subtotal + envio);
-    }
-
-    radioEnvio.addEventListener('change', updateTotal);
-    radioRetiro.addEventListener('change', updateTotal);
-    
-    updateTotal();
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('checkout-form');
+  const error = document.getElementById('checkout-error');
+  const button = document.getElementById('confirmar-pedido');
+  const direccion = document.getElementById('direccion');
+  const envioRadio = document.getElementById('despacho1');
+  const retiroRadio = document.getElementById('despacho2');
+  let cart;
+  try {
+    cart = JSON.parse(localStorage.getItem('sinewave_cart'));
+  } catch (e) {
+    cart = null;
+  }
+  if (!Array.isArray(cart) || cart.length === 0) {
+    window.location.href = "{% url 'carrito' %}";
+    return;
+  }
+  if (cart.some(item => !item || !Number.isInteger(item.id) || item.id < 1 ||
+      !Number.isInteger(item.qty) || item.qty < 1 ||
+      !Number.isFinite(item.precio) || item.precio < 0)) {
+    error.textContent = 'El carrito contiene productos antiguos o inválidos. Elimínalos y vuelve a agregarlos desde el catálogo.';
+    error.classList.remove('d-none');
+    button.disabled = true;
+    return;
+  }
+  document.getElementById('carrito-data').value = JSON.stringify(cart.map(item => ({id: item.id, qty: item.qty})));
+  const itemsList = document.getElementById('checkout-items-list');
+  const subtotal = cart.reduce((sum, item) => sum + item.precio * item.qty, 0);
+  const formatMoney = amount => '$' + amount.toLocaleString('es-CL');
+  cart.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'd-flex justify-content-between text-muted mb-1';
+    const name = document.createElement('span');
+    name.textContent = item.qty + 'x ' + item.nombre;
+    const price = document.createElement('span');
+    price.textContent = formatMoney(item.precio * item.qty);
+    row.append(name, price);
+    itemsList.appendChild(row);
   });
+  function updateTotal() {
+    const shipping = envioRadio.checked && subtotal < 100000 ? 5000 : 0;
+    document.getElementById('checkout-subtotal').textContent = formatMoney(subtotal);
+    document.getElementById('checkout-envio').textContent = formatMoney(shipping);
+    document.getElementById('checkout-total').textContent = formatMoney(subtotal + shipping);
+    direccion.required = envioRadio.checked;
+    direccion.disabled = retiroRadio.checked;
+  }
+  envioRadio.addEventListener('change', updateTotal);
+  retiroRadio.addEventListener('change', updateTotal);
+  updateTotal();
+  form.addEventListener('submit', function() {
+    button.disabled = true;
+    button.textContent = 'Registrando pedido...';
+  });
+});
 </script>
 {% endblock %}

@@ -38,6 +38,27 @@ def mensaje_error(exc):
     return 'Revisa los datos ingresados.'
 
 
+def mover_stock(cambios):
+    """Aplica cambios de stock con bloqueo; un valor negativo reserva unidades."""
+    cambios = {pk: cantidad for pk, cantidad in cambios.items() if cantidad}
+    productos = list(Producto.objects.select_for_update().filter(pk__in=cambios).order_by('pk'))
+    if len(productos) != len(cambios):
+        raise ValidationError('Uno de los productos ya no está disponible.')
+    for producto in productos:
+        nuevo_stock = producto.stock + cambios[producto.pk]
+        if nuevo_stock < 0:
+            raise ValidationError(f'Stock insuficiente para {producto.nombre}.')
+        producto.stock = nuevo_stock
+        producto.save(update_fields=['stock'])
+
+
+def cantidades_pedido(pedido, signo):
+    return {
+        item['producto_id']: signo * item['cantidad']
+        for item in pedido.detalles.values('producto_id').annotate(cantidad=Sum('cantidad'))
+    }
+
+
 @login_required
 def inicio(request):
     comprobar_staff(request)
@@ -285,12 +306,19 @@ def formulario(request, seccion, pk=None):
                     saved.full_clean()
                     saved.save()
                 else:
-                    saved = obj or Pedido()
+                    saved = Pedido.objects.select_for_update().get(pk=obj.pk) if obj else Pedido()
                     usuario = Usuario.objects.filter(pk=request.POST.get('usuario')).first()
                     if usuario is None:
                         raise ValidationError('Selecciona un cliente.')
+                    estado_anterior = saved.estado
+                    estado_nuevo = request.POST.get('estado', '')
+                    if saved.checkout_token and estado_anterior != estado_nuevo:
+                        if estado_nuevo == Pedido.Estado.CANCELADO:
+                            mover_stock(cantidades_pedido(saved, 1))
+                        elif estado_anterior == Pedido.Estado.CANCELADO:
+                            mover_stock(cantidades_pedido(saved, -1))
                     saved.usuario = usuario
-                    saved.estado = request.POST.get('estado', '')
+                    saved.estado = estado_nuevo
                     saved.full_clean()
                     saved.save()
             messages.success(request, 'Registro guardado correctamente.')
@@ -319,8 +347,13 @@ def eliminar(request, seccion, pk):
     obj = objeto_de_seccion(seccion, pk)
     if request.method == 'POST':
         try:
-            # ELIMINAR: se requiere POST para no borrar al abrir un enlace.
-            obj.delete()
+            with transaction.atomic():
+                # ELIMINAR: se requiere POST para no borrar al abrir un enlace.
+                if seccion == 'pedidos':
+                    obj = Pedido.objects.select_for_update().get(pk=obj.pk)
+                    if obj.checkout_token and obj.estado != Pedido.Estado.CANCELADO:
+                        mover_stock(cantidades_pedido(obj, 1))
+                obj.delete()
             messages.success(request, 'Registro eliminado.')
             return redirect('panel_listado', seccion=seccion)
         except ProtectedError:
@@ -341,7 +374,7 @@ def pedido(request, pk):
 
 
 def recalcular_total(pedido):
-    pedido.total = pedido.detalles.aggregate(total=Sum('subtotal'))['total'] or 0
+    pedido.total = (pedido.detalles.aggregate(total=Sum('subtotal'))['total'] or 0) + pedido.costo_envio
     pedido.save(update_fields=['total'])
 
 
@@ -368,7 +401,10 @@ def hijo_formulario(request, tipo, pedido_id, pk=None):
     if request.method == 'POST':
         try:
             with transaction.atomic():
+                parent = Pedido.objects.select_for_update().get(pk=pedido_id)
                 if tipo == 'detalles':
+                    viejo_producto_id = obj.producto_id if obj else None
+                    vieja_cantidad = obj.cantidad if obj else 0
                     saved = obj or DetallePedido()
                     producto = Producto.objects.filter(pk=request.POST.get('producto')).first()
                     if producto is None:
@@ -380,6 +416,11 @@ def hijo_formulario(request, tipo, pedido_id, pk=None):
                     if saved.cantidad < 1 or saved.precio_unitario < 0:
                         raise ValidationError('La cantidad debe ser positiva y el precio no puede ser negativo.')
                     saved.full_clean()
+                    if parent.checkout_token and parent.estado != Pedido.Estado.CANCELADO:
+                        cambios = {saved.producto_id: -saved.cantidad}
+                        if viejo_producto_id:
+                            cambios[viejo_producto_id] = cambios.get(viejo_producto_id, 0) + vieja_cantidad
+                        mover_stock(cambios)
                     saved.save()
                     recalcular_total(parent)
                 else:
@@ -413,6 +454,9 @@ def hijo_eliminar(request, tipo, pedido_id, pk):
         raise Http404('Sección inexistente')
     if request.method == 'POST':
         with transaction.atomic():
+            parent = Pedido.objects.select_for_update().get(pk=pedido_id)
+            if tipo == 'detalles' and parent.checkout_token and parent.estado != Pedido.Estado.CANCELADO:
+                mover_stock({obj.producto_id: obj.cantidad})
             obj.delete()
             if tipo == 'detalles':
                 recalcular_total(parent)

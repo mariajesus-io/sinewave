@@ -2,7 +2,8 @@
 {% block title %}Venta {{ pedido.pk }}{% endblock %}
 {% block content %}
 <div class="page-heading"><div><h1>Venta #{{ pedido.pk }}</h1><p>{{ pedido.usuario.nombre_completo }} · {{ pedido.fecha_creacion|date:'d/m/Y H:i' }} · {{ pedido.get_estado_display }}</p></div><a class="button" href="{% url 'panel_formulario_editar' 'pedidos' pedido.pk %}">Editar venta</a></div>
-<div class="stats"><div class="stat blue"><span>Total</span><strong>$ {{ pedido.total|floatformat:0 }}</strong></div><div class="stat green"><span>Cliente</span><strong>{{ pedido.usuario.nombre_completo }}</strong></div></div>
+<div class="stats"><div class="stat blue"><span>Total (incluye despacho: $ {{ pedido.costo_envio|floatformat:0 }})</span><strong>$ {{ pedido.total|floatformat:0 }}</strong></div><div class="stat green"><span>Cliente</span><strong>{{ pedido.usuario.nombre_completo }}</strong></div></div>
+<p>Entrega: {{ pedido.get_tipo_entrega_display }}{% if pedido.direccion_entrega %} · {{ pedido.direccion_entrega }}{% endif %}</p>
 <section class="card"><div class="card-head"><h2>Productos de la venta</h2><a class="button" href="{% url 'panel_hijo_nuevo' pedido.pk 'detalles' %}">+ Agregar producto</a></div><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th><th>Acciones</th></tr></thead><tbody>
 {% for d in detalles %}<tr><td>{{ d.producto.nombre }}</td><td>{{ d.cantidad }}</td><td>$ {{ d.precio_unitario|floatformat:0 }}</td><td>$ {{ d.subtotal|floatformat:0 }}</td><td class="actions"><a href="{% url 'panel_hijo_editar' pedido.pk 'detalles' d.pk %}">Editar</a><a href="{% url 'panel_hijo_eliminar' pedido.pk 'detalles' d.pk %}">Eliminar</a></td></tr>{% empty %}<tr><td colspan="5">Agrega productos para calcular el total.</td></tr>{% endfor %}
 </tbody></table></div></section>

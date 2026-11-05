@@ -1,58 +1,53 @@
 {% extends 'base.html' %}
 
-{% block title %}Historial de Compras - Sinewave{% endblock %}
+{% block title %}Mis pedidos - Sinewave{% endblock %}
 
 {% block content %}
 <div class="container py-5">
-  <h2 class="text-center mb-4 text-light">Historial de Compras y Estado de Pedidos</h2>
-  
+  <h2 class="text-center mb-4 text-light">Mis pedidos</h2>
   <div class="card bg-dark text-light border-secondary">
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-dark table-hover mb-0">
-          <thead>
-            <tr>
-              <th>ID Pedido</th>
-              <th>Fecha</th>
-              <th>Total</th>
-              <th>Estado</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
+          <thead><tr><th>Pedido</th><th>Fecha</th><th>Total</th><th>Estado</th><th>Detalle</th></tr></thead>
           <tbody>
+            {% for pedido in pagina %}
             <tr>
-              <td>#SW-10294</td>
-              <td>03/09/2026</td>
-              <td>$855.000</td>
-              <td><span class="badge bg-warning text-dark">En Preparación</span></td>
-              <td><button class="btn btn-sm btn-outline-light">Ver Detalles</button></td>
+              <td>#{{ pedido.pk }}</td>
+              <td>{{ pedido.fecha_creacion|date:'d/m/Y H:i' }}</td>
+              <td>$ {{ pedido.total|floatformat:0 }}</td>
+              <td>{{ pedido.get_estado_display }}</td>
+              <td>
+                <details>
+                  <summary>Ver detalles</summary>
+                  <ul class="list-unstyled mt-2 mb-1">
+                    {% for detalle in pedido.detalles.all %}
+                    <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }} — $ {{ detalle.subtotal|floatformat:0 }}</li>
+                    {% endfor %}
+                    <li>Envío: $ {{ pedido.costo_envio|floatformat:0 }}</li>
+                    <li>Entrega: {{ pedido.get_tipo_entrega_display }}{% if pedido.direccion_entrega %} · {{ pedido.direccion_entrega }}{% endif %}</li>
+                    {% for pago in pedido.pagos.all %}
+                    <li>Pago: {{ pago.get_metodo_display }} — {{ pago.get_estado_display }}</li>
+                    {% endfor %}
+                  </ul>
+                </details>
+              </td>
             </tr>
-            <tr>
-              <td>#SW-09881</td>
-              <td>15/08/2026</td>
-              <td>$45.000</td>
-              <td><span class="badge bg-success">Entregado</span></td>
-              <td><button class="btn btn-sm btn-outline-light">Ver Detalles</button></td>
-            </tr>
-            <tr>
-              <td>#SW-08123</td>
-              <td>01/07/2026</td>
-              <td>$120.000</td>
-              <td><span class="badge bg-success">Entregado</span></td>
-              <td><button class="btn btn-sm btn-outline-light">Ver Detalles</button></td>
-            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center py-4">Todavía no tienes pedidos.</td></tr>
+            {% endfor %}
           </tbody>
         </table>
       </div>
-    </div>
-    <div class="card-footer border-secondary text-center">
-      <p class="text-muted mb-0 small">Fin del Proceso Cliente</p>
+      {% if pagina.has_other_pages %}
+      <nav class="d-flex justify-content-between mt-3" aria-label="Páginas de pedidos">
+        {% if pagina.has_previous %}<a href="?page={{ pagina.previous_page_number }}">Anterior</a>{% else %}<span></span>{% endif %}
+        <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+        {% if pagina.has_next %}<a href="?page={{ pagina.next_page_number }}">Siguiente</a>{% else %}<span></span>{% endif %}
+      </nav>
+      {% endif %}
     </div>
   </div>
-  
-  <div class="text-center mt-4">
-    <a href="{% url 'inicio' %}" class="btn btn-primary">Volver a la Tienda</a>
-  </div>
+  <div class="text-center mt-4"><a href="{% url 'inicio' %}" class="btn btn-primary">Volver a la tienda</a></div>
 </div>
 {% endblock %}
-
