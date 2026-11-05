@@ -131,6 +131,20 @@ class PanelTests(TestCase):
             'fecha': pedido.fecha_creacion.date().isoformat()})
         self.assertEqual(response.context['filas'], [[Decimal('20000')]])
 
+    def test_reportes_muestran_pesos_con_puntos_y_consulta_destacada(self):
+        Pedido.objects.create(usuario=self.cliente, estado='pagado', total=1234567)
+        self.client.force_login(self.admin)
+        resumen = self.client.get(reverse('panel_reportes'))
+        self.assertContains(resumen, '$ 1.234.567')
+        self.assertContains(resumen, 'Consultas disponibles')
+        productos = self.client.get(reverse('panel_reportes'), {'reporte': 1})
+        self.assertContains(productos, '$ 10.000')
+        self.assertContains(productos, 'aria-current="page"')
+        sin_ventas = self.client.get(reverse('panel_reportes'), {
+            'reporte': 10, 'fecha': '2020-01-01',
+        })
+        self.assertContains(sin_ventas, '$ 0')
+
     def test_formularios_html_y_filtros_invalidos(self):
         self.client.force_login(self.admin)
         campos = {

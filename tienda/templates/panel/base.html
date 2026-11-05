@@ -13,7 +13,7 @@
       <a class="brand" href="{% url 'panel_inicio' %}">◢ Sinewave<br><small>Administración</small></a>
       <nav aria-label="Administración">
         <a href="{% url 'panel_inicio' %}">Inicio</a>
-        <a href="{% url 'panel_reportes' %}">Reportes</a>
+        <a href="{% url 'panel_reportes' %}"{% if request.resolver_match.url_name == 'panel_reportes' %} class="active" aria-current="page"{% endif %}>Reportes</a>
         <a href="{% url 'panel_listado' 'productos' %}">Productos</a>
         <a href="{% url 'panel_listado' 'categorias' %}">Categorías</a>
         <a href="{% url 'panel_listado' 'marcas' %}">Marcas</a>

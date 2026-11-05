@@ -89,7 +89,7 @@ def _resultado(numero, f):
         return _tabla(Producto.objects.filter(stock__lt=5).order_by('stock', 'nombre'),
                       ['nombre', 'categoria__nombre', 'stock'], ['Producto', 'Categoría', 'Stock'])
     if numero == 10:
-        total = _ventas().filter(fecha_creacion__date=f['fecha']).aggregate(total=Sum('total'))['total'] or 0
+        total = _ventas().filter(fecha_creacion__date=f['fecha']).aggregate(total=Sum('total'))['total'] or Decimal(0)
         return ['Total vendido'], [[total]], 1
     if numero == 11:
         q = Producto.objects.annotate(unidades=Sum('detalles__cantidad',
@@ -107,7 +107,7 @@ def _resultado(numero, f):
         return _tabla(Producto.objects.exclude(detalles__pedido__estado__in=VENTAS_VALIDAS).order_by('nombre'),
                       ['nombre', 'categoria__nombre', 'stock'], ['Producto', 'Categoría', 'Stock'])
     if numero == 15:
-        promedio = _ventas().aggregate(valor=Avg('total'))['valor'] or 0
+        promedio = _ventas().aggregate(valor=Avg('total'))['valor'] or Decimal(0)
         return ['Promedio por venta'], [[promedio]], 1
     if numero == 16:
         q = Categoria.objects.annotate(ingresos=Sum('productos__detalles__subtotal',
@@ -190,13 +190,16 @@ def reportes(request):
         'productos': Producto.objects.filter(stock__gt=0).count(),
         'ingresos': _ventas().aggregate(total=Sum('total'))['total'] or 0,
         'top_productos': list(Producto.objects.annotate(unidades=Sum('detalles__cantidad',
-            filter=Q(detalles__pedido__estado__in=VENTAS_VALIDAS), default=0)).order_by('-unidades', 'nombre')[:5]),
+            filter=Q(detalles__pedido__estado__in=VENTAS_VALIDAS), default=0)).filter(
+            unidades__gt=0).order_by('-unidades', 'nombre')[:5]),
         'top_clientes': list(Usuario.objects.annotate(compras=Count('pedidos',
             filter=Q(pedidos__estado__in=VENTAS_VALIDAS)), monto=Sum('pedidos__total',
-            filter=Q(pedidos__estado__in=VENTAS_VALIDAS), default=0)).order_by('-monto', 'nombre_completo')[:5]),
+            filter=Q(pedidos__estado__in=VENTAS_VALIDAS), default=0)).filter(
+            monto__gt=0).order_by('-monto', 'nombre_completo')[:5]),
         'stock_bajo': list(Producto.objects.select_related('categoria').filter(stock__lt=5).order_by('stock', 'nombre')[:5]),
         'categorias': list(Categoria.objects.annotate(ingresos=Sum('productos__detalles__subtotal',
-            filter=Q(productos__detalles__pedido__estado__in=VENTAS_VALIDAS), default=0)).order_by('-ingresos')),
+            filter=Q(productos__detalles__pedido__estado__in=VENTAS_VALIDAS), default=0)).filter(
+            ingresos__gt=0).order_by('-ingresos')),
         'meses': list(_ventas().annotate(mes=TruncMonth('fecha_creacion')).values('mes').annotate(
             monto=Sum('total')).order_by('-mes')[:6]),
     }
@@ -227,6 +230,7 @@ def reportes(request):
     dashboard['linea_puntos'] = ' '.join(puntos)
     return render(request, 'panel/reportes.html', {
         'preguntas': list(enumerate(PREGUNTAS, 1)), 'numero': numero,
+        'pregunta_seleccionada': PREGUNTAS[numero - 1] if numero else None,
         'filtros': request.GET, 'categorias_filtro': Categoria.objects.order_by('nombre'),
         'mostrar_filtros': numero in FILTROS,
         'columnas': columnas, 'filas': filas, 'limite': limite, 'aviso': aviso,

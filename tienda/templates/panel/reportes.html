@@ -1,35 +1,217 @@
 {% extends 'panel/base.html' %}
-{% block title %}Reportes de ventas{% endblock %}
+{% load formato %}
+{% block title %}Reportes · Sinewave{% endblock %}
+
 {% block content %}
-<div class="page-heading"><div><h1>Reportes de Ventas</h1><p>Análisis comercial de productos, clientes y ventas con datos actuales.</p></div><span class="user-chip">{{ request.user.get_username }}</span></div>
-<div class="stats">
-  <div class="stat blue"><span>Ventas realizadas</span><strong>{{ dashboard.ventas }}</strong></div>
-  <div class="stat purple"><span>Clientes registrados</span><strong>{{ dashboard.clientes }}</strong></div>
-  <div class="stat green"><span>Productos disponibles</span><strong>{{ dashboard.productos }}</strong></div>
-  <div class="stat orange"><span>Ingresos registrados</span><strong>$ {{ dashboard.ingresos|floatformat:0 }}</strong></div>
+<div class="reports-page">
+  <header class="page-heading reports-heading">
+    <div>
+      <span class="reports-eyebrow">ANÁLISIS COMERCIAL</span>
+      <h1>Reportes de la tienda</h1>
+      <p>Ventas, clientes y productos en un solo lugar.</p>
+    </div>
+    <a class="button" href="#catalogo">Explorar 20 reportes</a>
+  </header>
+
+  <section class="stats reports-stats" aria-label="Indicadores principales">
+    <div class="stat blue">
+      <span>Ventas realizadas</span>
+      <strong>{{ dashboard.ventas|numero_cl }}</strong>
+      <small>Pedidos confirmados</small>
+    </div>
+    <div class="stat purple">
+      <span>Clientes registrados</span>
+      <strong>{{ dashboard.clientes|numero_cl }}</strong>
+      <small>Perfiles de clientes</small>
+    </div>
+    <div class="stat green">
+      <span>Productos disponibles</span>
+      <strong>{{ dashboard.productos|numero_cl }}</strong>
+      <small>Con stock positivo</small>
+    </div>
+    <div class="stat orange">
+      <span>Ingresos registrados</span>
+      <strong class="money">{{ dashboard.ingresos|clp }}</strong>
+      <small>Pedidos pagados, enviados o entregados</small>
+    </div>
+  </section>
+
+  <div class="reports-section-title">
+    <div>
+      <h2>Resumen comercial</h2>
+      <p>Indicadores basados en las ventas registradas en la base de datos.</p>
+    </div>
+  </div>
+
+  <div class="reports-charts">
+    <section class="card report-card">
+      <div class="report-card-header">
+        <div><h3>Ingresos por categoría</h3><p>Participación de los productos vendidos</p></div>
+      </div>
+      {% if dashboard.categorias %}
+      <div class="donut-layout">
+        <div class="donut" style="background:{{ dashboard.donut_background }}" role="img" aria-label="Distribución de ingresos por categoría">
+          <span>{{ dashboard.ingresos_categorias|clp }}</span>
+        </div>
+        <div class="legend">
+          {% for c in dashboard.categorias %}
+          <div class="legend-item">
+            <i style="background:{{ c.color }}"></i>
+            <span>{{ c.nombre }}</span>
+            <strong class="money">{{ c.ingresos|clp }}</strong>
+            <small>{{ c.porcentaje }}%</small>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <p class="report-note">El desglose por categoría excluye el costo de despacho.</p>
+      {% else %}
+      <p class="report-empty">Aún no hay ventas para mostrar esta distribución.</p>
+      {% endif %}
+    </section>
+
+    <section class="card report-card">
+      <div class="report-card-header">
+        <div><h3>Evolución de ingresos</h3><p>Últimos seis meses con ventas</p></div>
+      </div>
+      {% if dashboard.meses %}
+      <svg class="line-chart" viewBox="0 0 360 150" role="img" aria-label="Evolución mensual de ingresos">
+        <line x1="20" y1="125" x2="340" y2="125" stroke="#cbd5e1"/>
+        <line x1="20" y1="70" x2="340" y2="70" stroke="#e2e8f0"/>
+        <polyline points="{{ dashboard.linea_puntos }}" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div class="months">
+        {% for m in dashboard.meses %}
+        <span>{{ m.mes|date:'M y' }}<br><strong class="money">{{ m.monto|clp }}</strong></span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="report-empty">Aún no hay ingresos mensuales para graficar.</p>
+      {% endif %}
+    </section>
+  </div>
+
+  <div class="reports-detail-grid">
+    <section class="card report-card">
+      <div class="report-card-header"><div><h3>Productos más vendidos</h3><p>Top 5 por unidades</p></div></div>
+      {% for p in dashboard.top_productos %}
+      <div class="bar-row">
+        <span title="{{ p.nombre }}">{{ p.nombre }}</span>
+        <progress value="{{ p.unidades }}" max="{{ dashboard.max_unidades }}">{{ p.unidades }}</progress>
+        <strong>{{ p.unidades|numero_cl }}</strong>
+      </div>
+      {% empty %}
+      <p class="report-empty">Aún no hay productos vendidos.</p>
+      {% endfor %}
+    </section>
+
+    <section class="card report-card">
+      <div class="report-card-header"><div><h3>Mejores clientes</h3><p>Top 5 por monto de compra</p></div></div>
+      <div class="table-wrap">
+        <table class="report-table">
+          <thead><tr><th>Cliente</th><th>Compras</th><th>Monto</th></tr></thead>
+          <tbody>
+            {% for c in dashboard.top_clientes %}
+            <tr><td>{{ c.nombre_completo }}</td><td>{{ c.compras|numero_cl }}</td><td class="money">{{ c.monto|clp }}</td></tr>
+            {% empty %}
+            <tr><td colspan="3" class="report-empty-cell">Aún no hay clientes con compras.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card report-card">
+      <div class="report-card-header"><div><h3>Stock bajo</h3><p>Productos con menos de cinco unidades</p></div></div>
+      <div class="table-wrap">
+        <table class="report-table">
+          <thead><tr><th>Producto</th><th>Categoría</th><th>Stock</th></tr></thead>
+          <tbody>
+            {% for p in dashboard.stock_bajo %}
+            <tr><td>{{ p.nombre }}</td><td>{{ p.categoria.nombre }}</td><td><span class="low-stock">{{ p.stock|numero_cl }}</span></td></tr>
+            {% empty %}
+            <tr><td colspan="3" class="report-empty-cell">No hay productos con stock bajo.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <section id="catalogo" class="card report-catalog">
+    <div class="report-card-header">
+      <div><h2>Consultas disponibles</h2><p>Selecciona una de las 20 consultas del caso Tienda.</p></div>
+      <span class="report-count">20 reportes</span>
+    </div>
+    <div class="report-options">
+      {% for n, pregunta in preguntas %}
+      <a class="report-option{% if n == numero %} active{% endif %}" href="?reporte={{ n }}#resultado"{% if n == numero %} aria-current="page"{% endif %}>
+        <span class="report-number">{{ n|stringformat:'02d' }}</span>
+        <span class="report-option-label">{{ pregunta }}</span>
+        <span class="report-arrow" aria-hidden="true">↗</span>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  {% if numero %}
+  <section id="resultado" class="card report-result">
+    <div class="report-card-header">
+      <div>
+        <span class="reports-eyebrow">REPORTE {{ numero|stringformat:'02d' }}</span>
+        <h2>{{ pregunta_seleccionada }}</h2>
+        <p>Resultado calculado con las consultas del sistema.</p>
+      </div>
+      <a href="#catalogo">Cambiar reporte</a>
+    </div>
+
+    {% if mostrar_filtros %}
+    <form method="get" action="{% url 'panel_reportes' %}#resultado" class="filters report-filters">
+      <input type="hidden" name="reporte" value="{{ numero }}">
+      {% if numero == 2 %}
+      <div class="form-field"><label>Categoría <select name="categoria" required><option value="">Selecciona una categoría</option>{% for categoria in categorias_filtro %}<option value="{{ categoria.pk }}" {% if categoria.pk|stringformat:'s' == filtros.categoria %}selected{% endif %}>{{ categoria.nombre }}</option>{% endfor %}</select></label></div>
+      {% endif %}
+      {% if numero == 3 %}
+      <div class="form-field"><label>Precio mínimo <input name="precio_min" type="number" min="0" step="1" value="{{ filtros.precio_min|default:'' }}" required></label></div>
+      <div class="form-field"><label>Precio máximo <input name="precio_max" type="number" min="0" step="1" value="{{ filtros.precio_max|default:'' }}" required></label></div>
+      {% endif %}
+      {% if numero == 6 or numero == 7 %}
+      <div class="form-field"><label>ID del cliente <input name="cliente" type="number" min="1" value="{{ filtros.cliente|default:'' }}" required></label></div>
+      {% endif %}
+      {% if numero == 7 %}
+      <div class="form-field"><label>Número de venta <input name="pedido" type="number" min="1" value="{{ filtros.pedido|default:'' }}" required></label></div>
+      {% endif %}
+      {% if numero == 8 %}
+      <div class="form-field"><label>Desde <input name="fecha_inicio" type="date" value="{{ filtros.fecha_inicio|default:'' }}" required></label></div>
+      <div class="form-field"><label>Hasta <input name="fecha_fin" type="date" value="{{ filtros.fecha_fin|default:'' }}" required></label></div>
+      {% endif %}
+      {% if numero == 10 %}
+      <div class="form-field"><label>Día <input name="fecha" type="date" value="{{ filtros.fecha|default:'' }}" required></label></div>
+      {% endif %}
+      {% if numero == 18 or numero == 19 %}
+      <div class="form-field"><label>Año <input name="anio" type="number" min="2000" max="2100" value="{{ filtros.anio|default:'' }}" placeholder="Año actual"></label></div>
+      {% endif %}
+      <button class="button" type="submit">Consultar</button>
+    </form>
+    {% endif %}
+
+    {% if aviso %}<div class="alert error" role="alert">{{ aviso }}</div>{% endif %}
+    {% if columnas %}
+    <div class="table-wrap">
+      <table class="report-table report-data">
+        <thead><tr>{% for c in columnas %}<th>{{ c }}</th>{% endfor %}</tr></thead>
+        <tbody>
+          {% for fila in filas %}
+          <tr>{% for celda in fila %}<td>{{ celda|valor_reporte }}</td>{% endfor %}</tr>
+          {% empty %}
+          <tr><td colspan="{{ columnas|length }}" class="report-empty-cell">No hay resultados para los filtros indicados.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if limite == 100 %}<p class="report-note">Se muestran hasta 100 filas para mantener rápida la página.</p>{% endif %}
+    {% endif %}
+  </section>
+  {% endif %}
 </div>
-<div class="report-grid">
-  <section class="card"><h2>Ventas por categoría</h2><p class="muted">Ingresos según productos vendidos</p><div class="donut-layout"><div class="donut" style="background:{{ dashboard.donut_background }}" role="img" aria-label="Distribución de ingresos por categoría"><span>$ {{ dashboard.ingresos_categorias|floatformat:0 }}</span></div><div class="legend">{% for c in dashboard.categorias %}<div><i style="background:{{ c.color }}"></i><span>{{ c.nombre }} ({{ c.porcentaje }}%)</span></div>{% empty %}<p>Sin datos.</p>{% endfor %}</div></div></section>
-  <section class="card"><h2>Evolución de ventas</h2><p class="muted">Últimos seis meses con ventas</p><svg class="line-chart" viewBox="0 0 360 150" role="img" aria-label="Evolución mensual de ingresos"><line x1="20" y1="125" x2="340" y2="125" stroke="#b9c6d9"/><line x1="20" y1="70" x2="340" y2="70" stroke="#e2e8f0"/>{% if dashboard.linea_puntos %}<polyline points="{{ dashboard.linea_puntos }}" fill="none" stroke="#2585fa" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>{% endif %}</svg><div class="months">{% for m in dashboard.meses %}<span>{{ m.mes|date:'M y' }}<br><strong>$ {{ m.monto|floatformat:0 }}</strong></span>{% empty %}<span>Sin datos.</span>{% endfor %}</div></section>
-  <section class="card"><h2>Top 5 productos más vendidos</h2><p class="muted">Unidades registradas en ventas</p>{% for p in dashboard.top_productos %}<div class="bar-row"><span>{{ p.nombre }}</span><progress value="{{ p.unidades }}" max="{{ dashboard.max_unidades }}"></progress><strong>{{ p.unidades }}</strong></div>{% empty %}<p>Sin datos.</p>{% endfor %}</section>
-</div>
-<div class="report-grid two">
-  <section class="card"><h2>Top 5 clientes por monto de compra</h2><div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Compras</th><th>Monto total</th></tr></thead><tbody>{% for c in dashboard.top_clientes %}<tr><td>{{ c.nombre_completo }}</td><td>{{ c.compras }}</td><td>$ {{ c.monto|floatformat:0 }}</td></tr>{% empty %}<tr><td colspan="3">Sin datos.</td></tr>{% endfor %}</tbody></table></div></section>
-  <section class="card"><h2>Productos con stock bajo</h2><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Categoría</th><th>Stock</th></tr></thead><tbody>{% for p in dashboard.stock_bajo %}<tr><td>{{ p.nombre }}</td><td>{{ p.categoria.nombre }}</td><td><span class="low-stock">{{ p.stock }}</span></td></tr>{% empty %}<tr><td colspan="3">Sin productos con menos de cinco unidades.</td></tr>{% endfor %}</tbody></table></div></section>
-</div>
-<section class="card"><div class="card-head"><div><h2>Tabla de consultas ORM</h2><p class="muted">Selecciona un reporte para ver los resultados guardados en la base.</p></div></div>
-<div class="table-wrap"><table><thead><tr><th>N.º</th><th>Pregunta del caso Tienda</th><th>Resultado</th></tr></thead><tbody>{% for n, pregunta in preguntas %}<tr><td>{{ n }}</td><td>{{ pregunta }}</td><td><a href="?reporte={{ n }}#resultado">Abrir reporte</a></td></tr>{% endfor %}</tbody></table></div></section>
-{% if numero %}<section id="resultado" class="card"><div class="card-head"><div><h2>Reporte {{ numero }}</h2><p class="muted">{{ preguntas|length }} consultas disponibles. Resultado del reporte seleccionado.</p></div><a href="{% url 'panel_reportes' %}">Volver al resumen</a></div>
-{% if mostrar_filtros %}<form method="get" class="filters"><input type="hidden" name="reporte" value="{{ numero }}">
-  {% if numero == 2 %}<div class="form-field"><label>Categoría <select name="categoria" required><option value="">Selecciona una categoría</option>{% for categoria in categorias_filtro %}<option value="{{ categoria.pk }}" {% if categoria.pk|stringformat:'s' == filtros.categoria %}selected{% endif %}>{{ categoria.nombre }}</option>{% endfor %}</select></label></div>{% endif %}
-  {% if numero == 3 %}<div class="form-field"><label>Precio mínimo <input name="precio_min" type="number" min="0" step="1" value="{{ filtros.precio_min|default:'' }}" required></label></div><div class="form-field"><label>Precio máximo <input name="precio_max" type="number" min="0" step="1" value="{{ filtros.precio_max|default:'' }}" required></label></div>{% endif %}
-  {% if numero == 6 or numero == 7 %}<div class="form-field"><label>ID del cliente <input name="cliente" type="number" min="1" value="{{ filtros.cliente|default:'' }}" required></label></div>{% endif %}
-  {% if numero == 7 %}<div class="form-field"><label>Número de venta <input name="pedido" type="number" min="1" value="{{ filtros.pedido|default:'' }}" required></label></div>{% endif %}
-  {% if numero == 8 %}<div class="form-field"><label>Desde <input name="fecha_inicio" type="date" value="{{ filtros.fecha_inicio|default:'' }}" required></label></div><div class="form-field"><label>Hasta <input name="fecha_fin" type="date" value="{{ filtros.fecha_fin|default:'' }}" required></label></div>{% endif %}
-  {% if numero == 10 %}<div class="form-field"><label>Día <input name="fecha" type="date" value="{{ filtros.fecha|default:'' }}" required></label></div>{% endif %}
-  {% if numero == 18 or numero == 19 %}<div class="form-field"><label>Año <input name="anio" type="number" min="2000" max="2100" value="{{ filtros.anio|default:'' }}" placeholder="Año actual"></label></div>{% endif %}
-  <button class="button" type="submit">Consultar</button></form>{% endif %}
-{% if aviso %}<div class="alert error">{{ aviso }}</div>{% endif %}
-{% if columnas %}<div class="table-wrap"><table><thead><tr>{% for c in columnas %}<th>{{ c }}</th>{% endfor %}</tr></thead><tbody>{% for fila in filas %}<tr>{% for celda in fila %}<td>{{ celda|default_if_none:'—' }}</td>{% endfor %}</tr>{% empty %}<tr><td colspan="6">No hay resultados para los filtros indicados.</td></tr>{% endfor %}</tbody></table></div>{% if limite == 100 %}<p class="muted">Se muestran como máximo 100 filas para mantener rápida la página.</p>{% endif %}{% endif %}
-</section>{% endif %}
 {% endblock %}
