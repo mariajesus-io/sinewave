@@ -15,7 +15,7 @@ import time
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.models import Max
 from django.utils import timezone
 from faker import Faker
@@ -68,7 +68,7 @@ class Command(BaseCommand):
         # Se borra de "hijo" a "padre" para respetar las claves foráneas.
         for qs in [Pago.objects.all(), DetallePedido.objects.all(), Pedido.objects.all(),
                    Producto.objects.filter(codigo_sku__startswith="SKU-"), Usuario.objects.all()]:
-            qs._raw_delete(qs.db)  # DELETE directo, rápido con millones de filas
+            qs.delete()
 
     def siguiente_numero(self, modelo):
         # Número desde donde seguir, para que correos y SKU no se repitan entre cargas.
@@ -144,7 +144,13 @@ class Command(BaseCommand):
                     pagos.append(Pago(pedido=pedido, metodo=random.choice(Pago.Metodo.values),
                                       estado=random.choice(Pago.Estado.values), fecha_transaccion=fecha))
                 # Primero los pedidos (así obtienen su id), después lo que depende de ellos
-                Pedido.objects.bulk_create(pedidos)
+                if connection.features.can_return_rows_from_bulk_insert:
+                    Pedido.objects.bulk_create(pedidos)
+                else:
+                    # MySQL no devuelve los ID de bulk_create; cada detalle
+                    # necesita el ID real del pedido recién guardado.
+                    for pedido in pedidos:
+                        pedido.save(force_insert=True)
                 DetallePedido.objects.bulk_create(detalles)
                 Pago.objects.bulk_create(pagos)
             self.progreso("Pedidos (+detalle +pago)", desde + tam, cantidad)

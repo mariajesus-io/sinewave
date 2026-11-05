@@ -18,11 +18,9 @@ Including another URLconf
 # Las rutas de la tienda están en tienda/urls.py y se "incluyen" aquí.
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),        # panel de administración de Django
     path('', include('tienda.urls')),       # todas las páginas de la tienda
 ]
 

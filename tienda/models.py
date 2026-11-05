@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -20,7 +21,7 @@ class Rol(models.Model):
 
 
 class Usuario(models.Model):
-    """Cliente de la tienda (no es el usuario que entra al admin)."""
+    """Cliente comercial, vinculado opcionalmente a una cuenta de acceso."""
     nombre_completo = models.CharField(max_length=150)
     correo = models.EmailField(unique=True)
     telefono = models.CharField(max_length=20, blank=True)
@@ -28,6 +29,10 @@ class Usuario(models.Model):
     # db_index (migración 0003) hace que ordenar y filtrar por fecha sea rápido con muchos datos.
     fecha_registro = models.DateTimeField(default=timezone.now, db_index=True)
     activo = models.BooleanField(default=True)
+    cuenta = models.OneToOneField(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL,
+        related_name='cliente',
+    )
     # Un rol tiene muchos usuarios (1 a N). PROTECT: no deja borrar un rol en uso.
     rol = models.ForeignKey(Rol, on_delete=models.PROTECT, related_name="usuarios")
 
@@ -74,7 +79,7 @@ class Producto(models.Model):
     precio = models.DecimalField(max_digits=10, decimal_places=0)  # pesos chilenos, sin decimales
     stock = models.PositiveIntegerField(default=0)
     es_caja_sorpresa = models.BooleanField(default=False)
-    # La foto se sube desde el admin y se guarda en media/productos/. Si no hay foto,
+    # La foto se sube desde el panel propio y se guarda en media/productos/. Si no hay foto,
     # se usa "imagen" (una URL o ruta /static/..., como los productos que ya existían).
     foto = models.ImageField(upload_to="productos/", blank=True, help_text="Sube una foto desde tu computador")
     imagen = models.CharField("URL de imagen", max_length=300, blank=True, help_text="Se usa solo si no hay foto subida. URL o ruta /static/...")
@@ -100,7 +105,7 @@ class Producto(models.Model):
 
 
 class Pedido(models.Model):
-    # "choices" limita los valores posibles y en el admin aparece como lista desplegable.
+    # "choices" limita los valores posibles y en el formulario aparece como lista desplegable.
     class Estado(models.TextChoices):
         PENDIENTE = "pendiente", "Pendiente"
         PAGADO = "pagado", "Pagado"

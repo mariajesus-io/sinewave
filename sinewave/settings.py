@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,10 +33,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-# Apps activas. Las de django.contrib vienen con Django (admin, usuarios, sesiones...);
+# Apps activas. Django aporta usuarios, sesiones y mensajes;
 # 'tienda' es la nuestra. Si una app no está aquí, Django no ve sus modelos ni sus plantillas.
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -79,31 +79,31 @@ WSGI_APPLICATION = 'sinewave.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-# Usamos SQLite: la base de datos es el archivo db.sqlite3 en la raíz del proyecto.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# MySQL local es el motor habitual. SQLite queda disponible únicamente para
+# pruebas automatizadas con SINEWAVE_DB_ENGINE=sqlite.
+if os.environ.get('SINEWAVE_DB_ENGINE') == 'sqlite':
+    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'mysql.connector.django',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'sinewave'),
+            'USER': os.environ.get('MYSQL_USER', 'sinewave'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+            'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
+            'PORT': os.environ.get('MYSQL_PORT', '3306'),
+            'OPTIONS': {'charset': 'utf8mb4'},
+        }
     }
-}
 
-# Ejemplo si se quisiera usar PostgreSQL (requiere: pip install psycopg):
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'sinewave',
-#         'USER': 'postgres',
-#         'PASSWORD': 'tu_clave',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
-#     }
-# }
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'panel_inicio'
 
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
-# Reglas de contraseña para los usuarios del admin (largo mínimo, no muy común, etc.).
+# Reglas de contraseña para las cuentas de acceso.
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -140,7 +140,7 @@ USE_TZ = True
 # falta STATICFILES_DIRS. En las plantillas se enlazan con {% static 'css/style.css' %}.
 STATIC_URL = 'static/'
 
-# Archivos que se suben desde el admin (fotos de productos)
+# Archivos que se suben desde el panel propio (fotos de productos).
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

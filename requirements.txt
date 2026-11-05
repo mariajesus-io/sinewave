@@ -3,3 +3,4 @@ Django==6.1.2
 Faker==40.41.0
 pillow==12.3.0
 sqlparse==0.6.0
+mysql-connector-python>=9.5,<10

@@ -1,127 +1,18 @@
 {% extends 'base.html' %}
 {% load static %}
-
-{% block title %}Iniciar Sesión - Sinewave Music Pro{% endblock %}
-
+{% block title %}Iniciar sesión - Sinewave{% endblock %}
 {% block content %}
-<div class="auth-wrapper" style="background: linear-gradient(135deg, var(--bg) 0%, var(--primary) 100%);">
-  <div class="card auth-card bg-dark text-light border-secondary">
-    <div class="card-body p-4 p-md-5">
-      <div class="text-center mb-4">
-        <a href="{% url 'inicio' %}" class="text-decoration-none">
-          <img src="{% static 'img/logo_white_cropped.png' %}" alt="SineWave Logo" style="height: 125px; width: auto; margin-bottom: 20px;">
-        </a>
-        <p class="text-muted">Inicia sesión en tu cuenta</p>
-      </div>
-
-      <form id="loginForm" class="needs-validation" novalidate>
-        <div class="mb-3">
-          <label class="form-label">Correo electrónico</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-            <input
-              type="email"
-              class="form-control"
-              id="email"
-              placeholder="tu@email.com"
-              required
-            />
-            <div class="invalid-feedback">Por favor ingresa un correo válido.</div>
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Contraseña</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-            <input
-              type="password"
-              class="form-control"
-              id="contrasena"
-              placeholder="Tu contraseña"
-              required
-            />
-            <div class="invalid-feedback">La contraseña es obligatoria.</div>
-          </div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <div class="form-check">
-            <input type="checkbox" class="form-check-input" id="recordar" />
-            <label class="form-check-label" for="recordar"
-              >Recordarme</label
-            >
-          </div>
-          <a
-            href="{% url 'olvide_contrasena' %}"
-            class="text-decoration-none small text-info"
-            >Olvidé mi contraseña</a
-          >
-        </div>
-        <div id="error-msg" class="alert alert-danger d-none"></div>
-        <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
-          Iniciar Sesión
-        </button>
-      </form>
-
-      <div class="text-center">
-        <p class="text-muted mb-0">
-          ¿No tienes cuenta? <a href="{% url 'registro' %}" class="text-info">Regístrate</a>
-        </p>
-      </div>
-
-      <hr class="border-secondary" />
-      <div class="text-center">
-        <small class="text-muted">
-          <i class="bi bi-shield-check me-1"></i>
-          Acceso admin: <strong>admin@sinewave.cl</strong> /
-          <strong>admin123</strong>
-          <br>
-          Acceso cliente: <strong>cualquier otro correo</strong>
-        </small>
-      </div>
-    </div>
-  </div>
+<div class="auth-wrapper" style="background:linear-gradient(135deg,var(--bg),var(--primary))">
+  <div class="card auth-card bg-dark text-light border-secondary"><div class="card-body p-4 p-md-5">
+    <div class="text-center mb-4"><img src="{% static 'img/logo_white_cropped.png' %}" alt="Sinewave" style="height:100px"><h1 class="h4 mt-3">Iniciar sesión</h1><p class="text-muted">Accede con tu cuenta de Django.</p></div>
+    {% if messages %}{% for message in messages %}<div class="alert alert-success">{{ message }}</div>{% endfor %}{% endif %}
+    {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+    <form method="post">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}">
+      <div class="mb-3"><label class="form-label" for="username">Usuario</label><input class="form-control" type="text" id="username" name="username" value="{{ usuario }}" required autofocus></div>
+      <div class="mb-3"><label class="form-label" for="password">Contraseña</label><input class="form-control" type="password" id="password" name="password" required></div>
+      <button type="submit" class="btn btn-primary w-100">Iniciar sesión</button>
+    </form>
+    <p class="text-center mt-4 mb-0">¿No tienes cuenta? <a href="{% url 'registro' %}">Regístrate</a></p>
+  </div></div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-  document
-    .getElementById("loginForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const form = e.target;
-      if (!form.checkValidity()) {
-        e.stopPropagation();
-        form.classList.add('was-validated');
-        return;
-      }
-      
-      const email = document.getElementById("email").value;
-      const pass = document.getElementById("contrasena").value;
-      const errorMsg = document.getElementById("error-msg");
-
-      if (email === "admin@sinewave.cl" && pass === "admin123") {
-        window.location.href = "/admin/";
-        return;
-      }
-      
-      let users = JSON.parse(localStorage.getItem('sinewave_users')) || [];
-      let foundUser = users.find(u => u.email === email);
-      
-      if (!foundUser) {
-        errorMsg.innerHTML = 'No existe una cuenta con este correo. Por favor, <a href="{% url 'registro' %}">crea una cuenta nueva aquí</a>.';
-        errorMsg.classList.remove('d-none');
-        return;
-      }
-      
-      if (foundUser.pass !== pass) {
-        errorMsg.textContent = 'Contraseña incorrecta. Por favor, intenta de nuevo.';
-        errorMsg.classList.remove('d-none');
-        return;
-      }
-      
-      errorMsg.classList.add('d-none');
-      window.location.href = "{% url 'checkout' %}";
-    });
-</script>
 {% endblock %}

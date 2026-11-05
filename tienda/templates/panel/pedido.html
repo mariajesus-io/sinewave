@@ -1,0 +1,12 @@
+{% extends 'panel/base.html' %}
+{% block title %}Venta {{ pedido.pk }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>Venta #{{ pedido.pk }}</h1><p>{{ pedido.usuario.nombre_completo }} · {{ pedido.fecha_creacion|date:'d/m/Y H:i' }} · {{ pedido.get_estado_display }}</p></div><a class="button" href="{% url 'panel_formulario_editar' 'pedidos' pedido.pk %}">Editar venta</a></div>
+<div class="stats"><div class="stat blue"><span>Total</span><strong>$ {{ pedido.total|floatformat:0 }}</strong></div><div class="stat green"><span>Cliente</span><strong>{{ pedido.usuario.nombre_completo }}</strong></div></div>
+<section class="card"><div class="card-head"><h2>Productos de la venta</h2><a class="button" href="{% url 'panel_hijo_nuevo' pedido.pk 'detalles' %}">+ Agregar producto</a></div><div class="table-wrap"><table><thead><tr><th>Producto</th><th>Cantidad</th><th>Precio unitario</th><th>Subtotal</th><th>Acciones</th></tr></thead><tbody>
+{% for d in detalles %}<tr><td>{{ d.producto.nombre }}</td><td>{{ d.cantidad }}</td><td>$ {{ d.precio_unitario|floatformat:0 }}</td><td>$ {{ d.subtotal|floatformat:0 }}</td><td class="actions"><a href="{% url 'panel_hijo_editar' pedido.pk 'detalles' d.pk %}">Editar</a><a href="{% url 'panel_hijo_eliminar' pedido.pk 'detalles' d.pk %}">Eliminar</a></td></tr>{% empty %}<tr><td colspan="5">Agrega productos para calcular el total.</td></tr>{% endfor %}
+</tbody></table></div></section>
+<section class="card"><div class="card-head"><h2>Pagos</h2><a class="button" href="{% url 'panel_hijo_nuevo' pedido.pk 'pagos' %}">+ Registrar pago</a></div><div class="table-wrap"><table><thead><tr><th>Método</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody>
+{% for p in pagos %}<tr><td>{{ p.get_metodo_display }}</td><td>{{ p.get_estado_display }}</td><td>{{ p.fecha_transaccion|date:'d/m/Y H:i' }}</td><td class="actions"><a href="{% url 'panel_hijo_editar' pedido.pk 'pagos' p.pk %}">Editar</a><a href="{% url 'panel_hijo_eliminar' pedido.pk 'pagos' p.pk %}">Eliminar</a></td></tr>{% empty %}<tr><td colspan="4">No hay pagos registrados.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

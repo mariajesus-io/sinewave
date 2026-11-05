@@ -1,0 +1,15 @@
+{% extends 'panel/base.html' %}
+{% block title %}Inicio del panel{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>Resumen de la tienda</h1><p>Datos actuales de productos, clientes y ventas.</p></div><a class="button" href="{% url 'panel_reportes' %}">Ver reportes</a></div>
+<div class="stats">
+  <div class="stat blue"><span>Productos</span><strong>{{ productos }}</strong></div>
+  <div class="stat purple"><span>Clientes</span><strong>{{ clientes }}</strong></div>
+  <div class="stat green"><span>Ventas</span><strong>{{ pedidos }}</strong></div>
+  <div class="stat orange"><span>Monto registrado</span><strong>$ {{ ventas|floatformat:0 }}</strong></div>
+</div>
+<section class="card"><div class="card-head"><h2>Últimas ventas</h2><a href="{% url 'panel_listado' 'pedidos' %}">Ver todas</a></div>
+<div class="table-wrap"><table><thead><tr><th>N.º</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Total</th><th></th></tr></thead><tbody>
+{% for p in ultimos %}<tr><td>#{{ p.pk }}</td><td>{{ p.usuario.nombre_completo }}</td><td>{{ p.fecha_creacion|date:'d/m/Y H:i' }}</td><td>{{ p.get_estado_display }}</td><td>$ {{ p.total|floatformat:0 }}</td><td><a href="{% url 'panel_pedido' p.pk %}">Abrir</a></td></tr>{% empty %}<tr><td colspan="6">Aún no hay ventas.</td></tr>{% endfor %}
+</tbody></table></div></section>
+{% endblock %}

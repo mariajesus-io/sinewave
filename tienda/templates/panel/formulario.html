@@ -1,0 +1,60 @@
+{% extends 'panel/base.html' %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{% if obj %}Editar{% else %}Crear{% endif %} {{ titulo|lower }}</h1><p>Los cambios se guardan en la base de datos.</p></div></div>
+<section class="card form-card"><form method="post" enctype="multipart/form-data">{% csrf_token %}
+  {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+  <div class="form-grid">
+  {% if seccion == 'cuentas' %}
+    <div class="form-field"><label>Usuario <input name="username" value="{{ datos.username|default:'' }}" required></label></div>
+    <div class="form-field"><label>Correo <input name="email" type="email" value="{{ datos.email|default:'' }}" required></label></div>
+    <div class="form-field"><label>Nombre <input name="first_name" value="{{ datos.first_name|default:'' }}"></label></div>
+    <div class="form-field"><label>Apellido <input name="last_name" value="{{ datos.last_name|default:'' }}"></label></div>
+    <div class="form-field"><label>Contraseña {% if obj %}(deja vacío para conservarla){% endif %} <input name="password1" type="password" {% if not obj %}required{% endif %}></label></div>
+    <div class="form-field"><label>Confirmar contraseña <input name="password2" type="password" {% if not obj %}required{% endif %}></label></div>
+    <div class="form-field"><label><input name="is_staff" type="checkbox" {% if datos.is_staff %}checked{% endif %}> Acceso al panel</label></div>
+    <div class="form-field"><label><input name="is_active" type="checkbox" {% if datos.is_active %}checked{% endif %}> Cuenta activa</label></div>
+  {% elif seccion == 'clientes' %}
+    <div class="form-field"><label>Nombre completo <input name="nombre_completo" value="{{ datos.nombre_completo|default:'' }}" required></label></div>
+    <div class="form-field"><label>Correo <input name="correo" type="email" value="{{ datos.correo|default:'' }}" required></label></div>
+    <div class="form-field"><label>Teléfono <input name="telefono" value="{{ datos.telefono|default:'' }}"></label></div>
+    <div class="form-field"><label>Rol comercial <select name="rol" required><option value="">Selecciona un rol</option>{% for rol in roles %}<option value="{{ rol.pk }}" {% if rol.pk|stringformat:'s' == datos.rol %}selected{% endif %}>{{ rol.nombre }}</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label><input name="activo" type="checkbox" {% if datos.activo %}checked{% endif %}> Cliente activo</label></div>
+  {% elif seccion == 'roles' %}
+    <div class="form-field"><label>Nombre <input name="nombre" value="{{ datos.nombre|default:'' }}" required></label></div>
+    <div class="form-field"><label>Descripción <input name="descripcion" value="{{ datos.descripcion|default:'' }}"></label></div>
+  {% elif seccion == 'categorias' %}
+    <div class="form-field"><label>Nombre <input name="nombre" value="{{ datos.nombre|default:'' }}" required></label></div>
+    <div class="form-field"><label>Slug <input name="slug" value="{{ datos.slug|default:'' }}" required></label></div>
+    <div class="form-field"><label>Icono <input name="icono" value="{{ datos.icono|default:'' }}"></label></div>
+    <div class="form-field"><label>Imagen (URL) <input name="imagen" value="{{ datos.imagen|default:'' }}"></label></div>
+    <div class="form-field"><label><input name="activa" type="checkbox" {% if datos.activa %}checked{% endif %}> Categoría activa</label></div>
+  {% elif seccion == 'marcas' %}
+    <div class="form-field"><label>Nombre <input name="nombre" value="{{ datos.nombre|default:'' }}" required></label></div>
+  {% elif seccion == 'productos' %}
+    <div class="form-field"><label>Código SKU <input name="codigo_sku" value="{{ datos.codigo_sku|default:'' }}" required></label></div>
+    <div class="form-field"><label>Nombre <input name="nombre" value="{{ datos.nombre|default:'' }}" required></label></div>
+    <div class="form-field"><label>Descripción <textarea name="descripcion" rows="3">{{ datos.descripcion|default:'' }}</textarea></label></div>
+    <div class="form-field"><label>Precio <input name="precio" type="number" min="0" step="1" value="{{ datos.precio|default:'' }}" required></label></div>
+    <div class="form-field"><label>Stock <input name="stock" type="number" min="0" value="{{ datos.stock|default:'' }}" required></label></div>
+    <div class="form-field"><label>Categoría <select name="categoria" required><option value="">Selecciona una categoría</option>{% for categoria in categorias %}<option value="{{ categoria.pk }}" {% if categoria.pk|stringformat:'s' == datos.categoria %}selected{% endif %}>{{ categoria.nombre }}</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label>Marca <select name="marca"><option value="">Sin marca</option>{% for marca in marcas %}<option value="{{ marca.pk }}" {% if marca.pk|stringformat:'s' == datos.marca %}selected{% endif %}>{{ marca.nombre }}</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label>Foto <input name="foto" type="file" accept="image/*"></label>{% if obj.foto %}<small>Foto actual: {{ obj.foto.name }}</small>{% endif %}</div>
+    <div class="form-field"><label>URL de imagen alternativa <input name="imagen" value="{{ datos.imagen|default:'' }}"></label></div>
+    <div class="form-field"><label><input name="destacado" type="checkbox" {% if datos.destacado %}checked{% endif %}> Destacado</label></div>
+    <div class="form-field"><label><input name="es_caja_sorpresa" type="checkbox" {% if datos.es_caja_sorpresa %}checked{% endif %}> Caja sorpresa</label></div>
+  {% elif seccion == 'pedidos' %}
+    <div class="form-field"><label>Cliente <select name="usuario" required><option value="">Selecciona un cliente</option>{% for cliente in clientes %}<option value="{{ cliente.pk }}" {% if cliente.pk|stringformat:'s' == datos.usuario %}selected{% endif %}>{{ cliente.nombre_completo }} ({{ cliente.correo }})</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label>Estado <select name="estado">{% for valor, etiqueta in estados %}<option value="{{ valor }}" {% if valor == datos.estado %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></label></div>
+  {% elif seccion == 'detalles' %}
+    <div class="form-field"><label>Producto <select name="producto" required><option value="">Selecciona un producto</option>{% for producto in productos %}<option value="{{ producto.pk }}" {% if producto.pk|stringformat:'s' == datos.producto %}selected{% endif %}>{{ producto.nombre }}</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label>Cantidad <input name="cantidad" type="number" min="1" value="{{ datos.cantidad|default:1 }}" required></label></div>
+    <div class="form-field"><label>Precio unitario <input name="precio_unitario" type="number" min="0" step="1" value="{{ datos.precio_unitario|default:'' }}" required></label></div>
+  {% elif seccion == 'pagos' %}
+    <div class="form-field"><label>Método <select name="metodo">{% for valor, etiqueta in metodos %}<option value="{{ valor }}" {% if valor == datos.metodo %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></label></div>
+    <div class="form-field"><label>Estado <select name="estado">{% for valor, etiqueta in estados_pago %}<option value="{{ valor }}" {% if valor == datos.estado %}selected{% endif %}>{{ etiqueta }}</option>{% endfor %}</select></label></div>
+  {% endif %}
+  </div>
+  <div class="form-actions"><button type="submit" class="button">Guardar</button><a href="{% if volver %}{{ volver }}{% else %}{% url 'panel_listado' seccion %}{% endif %}">Cancelar</a>{% if obj and puede_eliminar and seccion %}<a class="danger-link" href="{% url 'panel_eliminar' seccion obj.pk %}">Eliminar</a>{% endif %}</div>
+</form></section>
+{% endblock %}

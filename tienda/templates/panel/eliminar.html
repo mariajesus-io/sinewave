@@ -1,0 +1,7 @@
+{% extends 'panel/base.html' %}
+{% block title %}Eliminar registro{% endblock %}
+{% block content %}
+<div class="page-heading"><h1>Eliminar {{ titulo|lower }}</h1></div>
+<section class="card form-card"><p>¿Confirmas la eliminación de <strong>{{ obj }}</strong>? Esta acción también elimina los datos dependientes del pedido cuando corresponda.</p>
+<form method="post">{% csrf_token %}<button class="button danger" type="submit">Sí, eliminar</button><a class="cancel" href="{% if volver %}{{ volver }}{% else %}{% url 'panel_formulario_editar' seccion obj.pk %}{% endif %}">Cancelar</a></form></section>
+{% endblock %}
