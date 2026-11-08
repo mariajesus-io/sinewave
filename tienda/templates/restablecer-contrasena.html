@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Restablecer contraseña - Sinewave{% endblock %}
+{% block content %}
+<div class="auth-wrapper" style="background:linear-gradient(135deg,var(--bg),var(--primary))">
+  <div class="card auth-card bg-dark text-light border-secondary"><div class="card-body p-4 p-md-5">
+    <h1 class="h4 text-center mb-4">Restablecer contraseña</h1>
+    {% if valido %}
+      {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label" for="password1">Nueva contraseña</label><input class="form-control" type="password" id="password1" name="password1" required></div>
+        <div class="mb-3"><label class="form-label" for="password2">Confirmar contraseña</label><input class="form-control" type="password" id="password2" name="password2" required></div>
+        <button type="submit" class="btn btn-primary w-100">Guardar contraseña</button>
+      </form>
+    {% else %}
+      <div class="alert alert-danger">Este enlace no es válido o ya fue utilizado. Solicita uno nuevo.</div>
+      <a href="{% url 'olvide_contrasena' %}">Solicitar otro enlace</a>
+    {% endif %}
+  </div></div>
+</div>
+{% endblock %}

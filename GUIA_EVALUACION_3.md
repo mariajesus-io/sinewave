@@ -2,7 +2,8 @@
 
 ## Qué se implementó
 
-El panel `/panel/` usa formularios HTML sencillos y vistas en `tienda/panel.py`.
+El panel `/panel/` usa formularios HTML sencillos. Las vistas que procesan sus
+envíos están en `tienda/views.py`; `tienda/panel.py` conserva consultas y funciones auxiliares.
 No se usa `forms.py` ni Django Admin. Cada vista administrativa tiene
 `@login_required` y además comprueba `is_staff`. Si no hay sesión, Django redirige
 al login; si la cuenta está autenticada pero no es administrativa, devuelve 403.
@@ -15,7 +16,8 @@ un cliente se registra, ambos registros se vinculan por `Usuario.cuenta`.
 Las cuentas se desactivan con `is_active=False`; los clientes con `activo=False`.
 Las contraseñas siempre se guardan mediante `set_password()` o `create_user()`.
 
-Las operaciones de crear, consultar, modificar y eliminar están en `tienda/panel.py`.
+Las operaciones de crear, modificar y eliminar están en `tienda/views.py`.
+Las consultas del panel están en `tienda/panel.py`.
 La eliminación de clientes se reemplaza por desactivación para conservar ventas.
 Las tablas y reportes consultan los modelos de `tienda/models.py`. Los filtros y
 consultas de los 20 reportes están en `tienda/reportes.py`.

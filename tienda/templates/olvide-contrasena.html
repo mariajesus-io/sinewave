@@ -1,92 +1,21 @@
 {% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Olvide mi Contrasena - Sinewave Music Pro{% endblock %}
-
+{% block title %}Recuperar contraseña - Sinewave{% endblock %}
 {% block content %}
-<div class="auth-wrapper" style="background: linear-gradient(135deg, var(--bg) 0%, var(--primary) 100%);">
-  <div class="card auth-card bg-dark text-light border-secondary">
-    <div class="card-body p-4 p-md-5">
-      <div class="text-center mb-4">
-                <a href="{% url 'inicio' %}" class="text-decoration-none">
-          <img src="{% static 'img/logo_white_cropped.png' %}" alt="SineWave Logo" style="height: 125px; width: auto; margin-bottom: 20px;">
-        </a>
-        <p class="text-muted">Recupera tu contraseña</p>
-      </div>
-
-      <div id="formContainer">
-        <p class="mb-3 text-light">
-          Ingresa tu correo electrónico y te enviaremos las instrucciones
-          para restablecer tu contraseña.
-        </p>
-
-        <form id="olvideForm" class="needs-validation" novalidate>
-          <div class="mb-3">
-            <label class="form-label">Correo electrónico</label>
-            <div class="input-group">
-              <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-              <input
-                type="email"
-                class="form-control"
-                id="email"
-                placeholder="tu@email.com"
-                required
-              />
-              <div class="invalid-feedback">Ingresa un correo válido.</div>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary w-100 py-2 mb-3">
-            Enviar Instrucciones
-          </button>
-        </form>
-      </div>
-
-      <div id="exitoContainer" class="d-none text-center">
-        <div class="mb-3">
-          <i
-            class="bi bi-check-circle-fill text-success"
-            style="font-size: 4rem"
-          ></i>
-        </div>
-        <h5>Correo Enviado</h5>
-        <p class="text-muted">
-          Si existe una cuenta con ese correo electrónico, recibirás las
-          instrucciones para restablecer tu contraseña en unos minutos.
-        </p>
-        <a href="{% url 'login' %}" class="btn btn-primary mt-2"
-          >Volver al Login</a
-        >
-      </div>
-
-      <hr class="border-secondary my-4" />
-      <div class="text-center">
-        <p class="text-muted mb-0">
-          <a href="{% url 'login' %}" class="text-decoration-none text-info"
-            ><i class="bi bi-arrow-left me-1"></i>Volver al inicio de
-            sesión</a
-          >
-        </p>
-      </div>
-    </div>
-  </div>
+<div class="auth-wrapper" style="background:linear-gradient(135deg,var(--bg),var(--primary))">
+  <div class="card auth-card bg-dark text-light border-secondary"><div class="card-body p-4 p-md-5">
+    <h1 class="h4 text-center mb-4">Recuperar contraseña</h1>
+    {% if enviado %}
+      <div class="alert alert-success">Si existe una cuenta activa con ese correo, se generó un enlace para restablecer la contraseña. En este entorno de desarrollo, revísalo en la consola donde corre Django.</div>
+    {% else %}
+      <p>Ingresa el correo de tu cuenta para solicitar un enlace de recuperación.</p>
+      {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3"><label class="form-label" for="email">Correo electrónico</label><input class="form-control" type="email" id="email" name="email" value="{{ email }}" maxlength="254" required></div>
+        <button type="submit" class="btn btn-primary w-100">Solicitar enlace</button>
+      </form>
+    {% endif %}
+    <p class="text-center mt-4 mb-0"><a href="{% url 'login' %}">Volver a iniciar sesión</a></p>
+  </div></div>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-  document
-    .getElementById("olvideForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const form = e.target;
-      if (!form.checkValidity()) {
-        e.stopPropagation();
-        form.classList.add('was-validated');
-        return;
-      }
-      
-      document.getElementById("formContainer").classList.add("d-none");
-      document.getElementById("exitoContainer").classList.remove("d-none");
-    });
-</script>
 {% endblock %}
