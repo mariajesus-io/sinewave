@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -79,22 +78,13 @@ WSGI_APPLICATION = 'sinewave.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
-# MySQL local es el motor habitual. SQLite queda disponible únicamente para
-# pruebas automatizadas con SINEWAVE_DB_ENGINE=sqlite.
-if os.environ.get('SINEWAVE_DB_ENGINE') == 'sqlite':
-    DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'db.sqlite3'}}
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'mysql.connector.django',
-            'NAME': os.environ.get('MYSQL_DATABASE', 'sinewave'),
-            'USER': os.environ.get('MYSQL_USER', 'sinewave'),
-            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
-            'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),
-            'PORT': os.environ.get('MYSQL_PORT', '3306'),
-            'OPTIONS': {'charset': 'utf8mb4'},
-        }
+# SQLite guarda los datos en un archivo local y no requiere servidor ni credenciales.
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'panel_inicio'

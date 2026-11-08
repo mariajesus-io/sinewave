@@ -94,7 +94,6 @@ DATABASES = {
 ```
 
 - **¿Qué BD usamos?** SQLite. Es un solo archivo (`db.sqlite3`) en la raíz del proyecto y no necesita instalar un servidor.
-- En el mismo archivo, debajo, hay un ejemplo comentado de cómo sería con PostgreSQL: solo cambian `ENGINE`, nombre, usuario, clave, host y puerto.
 
 **Cómo verificar la conexión:**
 
@@ -480,7 +479,7 @@ En Bootstrap 5, cargado desde un CDN en `base.html`, y en `tienda/static/css/sty
 ### Modelos y base de datos
 
 **¿Qué base de datos usan?**
-SQLite. Es el archivo `db.sqlite3` y no necesita servidor. Para cambiar a PostgreSQL basta con modificar `DATABASES` en `settings.py`; hay un ejemplo comentado.
+SQLite. Es el archivo `db.sqlite3` y no necesita servidor.
 
 **¿Qué es el ORM?**
 Trabajar la BD con clases de Python en vez de SQL. Por ejemplo, `Producto.objects.filter(destacado=True)` equivale a `SELECT ... WHERE destacado = 1`.

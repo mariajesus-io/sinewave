@@ -1,12 +1,10 @@
 # Demostración de las 20 consultas ORM en la terminal
 
 Estas consultas **solo leen datos**. Ejecútalas desde la raíz del proyecto. La
-primera línea carga la configuración local de MySQL; la segunda abre la consola
-de Django:
+consola de Django usa la base SQLite del proyecto:
 
 ```bash
 cd /home/andres/Projects/sinewave
-source .env.local
 .venv/bin/python manage.py shell
 ```
 
@@ -31,7 +29,7 @@ anio = fecha.year
 print(connection.vendor, 'venta:', venta.id, 'cliente:', venta.usuario_id, 'categoría:', categoria.id, 'fecha:', fecha)
 ```
 
-Debe decir `mysql`. Esta preparación requiere al menos una categoría y una venta
+Debe decir `sqlite`. Esta preparación requiere al menos una categoría y una venta
 pagada, enviada o entregada. En esta instalación ya existen. Si cambias los datos,
 ejecuta de nuevo el bloque. En las consultas siguientes pega **una línea completa
 por número** en el indicador `>>>`; Enter muestra el resultado.

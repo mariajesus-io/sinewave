@@ -22,10 +22,9 @@ consultas de los 20 reportes están en `tienda/reportes.py`.
 
 ## Cómo hacer una consulta ORM
 
-Abre la consola de Django con las variables de MySQL cargadas:
+Abre la consola de Django con la base SQLite del proyecto:
 
 ```bash
-source .env.local
 python manage.py shell
 ```
 
@@ -109,6 +108,6 @@ Para comprobar la base utilizada desde el shell:
 
 ```python
 from django.db import connection
-connection.vendor             # 'mysql'
+connection.vendor             # 'sqlite'
 Producto.objects.count()      # datos persistidos
 ```
